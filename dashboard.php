@@ -1,3 +1,32 @@
+<?php
+// sensor.php
+
+// Include the database configuration file using require_once
+require_once 'config.php';
+
+// Function to get the latest average sensor data for all sensors
+function getLatestSensorData() {
+    global $link; // Use the database connection from config.php
+    $sensorData = [];
+
+    for ($sensorId = 1; $sensorId <= 3; $sensorId++) {
+        $sql = "SELECT * FROM `rawsensor{$sensorId}` ORDER BY `reading_time` DESC LIMIT 1";
+        $result = mysqli_query($link, $sql);
+
+        if ($result) {
+            $sensorData[$sensorId] = mysqli_fetch_assoc($result);
+        } else {
+            $sensorData[$sensorId] = null; // Handle the case where there is no data
+        }
+    }
+
+    return $sensorData;
+}
+
+// Get the data for all sensors
+$allSensorData = getLatestSensorData();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,150 +67,33 @@
                     <span class="power">powered by BSCPE</span>
                 </div>
             </div>
-            <div class="col">
-                <div class="row">
-                    <span class="sensor-label">Nitrogen</span>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    2
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    4
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    4
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="row">
-                    <span class="sensor-label">Phosphorus</span>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    2
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    4
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    4
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="row">
-                    <span class="sensor-label">Potassium</span>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    2
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    4
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    4
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="row">
-                    <span class="sensor-label">Temperature</span>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    2
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    4
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    4
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="row">
-                    <span class="sensor-label">Moisture</span>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    2
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    4
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    4
-                    </div>
-                </div>
+            <div class="row">
+            <div class="col-sm-8 sensor">
+                <div class="row sensor-header">
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+            <tr>
+               
+                <th scope="col">Nitrogen</th>
+                <th scope="col">Phosphorus</th>
+                <th scope="col">Potassium</th>
+                <th scope="col">Air Temp</th>
+                <th scope="col">Soil Temp</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($allSensorData as $sensorId => $data): ?>
+                <tr>
+                    
+                    <td><?php echo $data ? htmlspecialchars($data['reading_time']) : 'N/A'; echo "<span>  &nbsp  &nbsp  &nbsp </span>"; echo $data ? htmlspecialchars($data['nitrogen']) : 'N/A';?></td>
+                    <td><?php echo $data ? htmlspecialchars($data['reading_time']) : 'N/A'; echo "<span>  &nbsp  &nbsp  &nbsp </span>"; echo $data ? htmlspecialchars($data['phosphorus']) : 'N/A';?></td>
+                    <td><?php echo $data ? htmlspecialchars($data['reading_time']) : 'N/A'; echo "<span>  &nbsp  &nbsp  &nbsp </span>"; echo $data ? htmlspecialchars($data['potassium']) : 'N/A';?></td>
+                    <td><?php echo $data ? htmlspecialchars($data['reading_time']) : 'N/A'; echo "<span>  &nbsp  &nbsp  &nbsp </span>"; echo $data ? htmlspecialchars($data['air_temp']) : 'N/A';?></td>
+                    <td><?php echo $data ? htmlspecialchars($data['reading_time']) : 'N/A'; echo "<span>  &nbsp  &nbsp  &nbsp </span>"; echo $data ? htmlspecialchars($data['soil_temperature']) : 'N/A';?></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
             </div>
 
         </div>
@@ -258,10 +170,7 @@
       border-radius: 8px; /* Add border radius to the text container */
       padding: 15px; /* Add some padding for better visual appearance */
     }
-    .main-content {
-    margin-left: 250px; /* Same as the width of your sidebar */
-    padding: 1em;
-    }
+
     
     .recommendation-box {
         width: 50px; /* Adjust the width as needed */
