@@ -239,7 +239,7 @@
             
     }
     body {
-      background-color: #EDEDEC;
+      background-color: #EDEDEC; /* Set a light background color for the body */
     }
 
     .main-content {
@@ -250,6 +250,7 @@
     .container .col, .col-sm-8, .col-sm-4 {
       background-color: #ffffff; /* Set a white background for the columns */
       border-radius: 8px; /* Add border radius to the columns */
+      /* padding: 15px; Add some padding for better visual appearance */
       margin: 10px; /* Add margin to separate columns */
     }
 
