@@ -242,39 +242,41 @@
       background-color: #EDEDEC;
     }
 
-    .main-content {
-      border-radius: 10px; /* Add border radius to the main content */
-      padding: 20px; /* Add some padding for better visual appearance */
+    .pick-sensor{
+        margin-bottom: 20px;
     }
-
-    .container .col, .col-sm-8, .col-sm-4 {
-      background-color: #ffffff; /* Set a white background for the columns */
-      border-radius: 8px; /* Add border radius to the columns */
-      margin: 10px; /* Add margin to separate columns */
+    .col, .col-sm-8, .col-sm-4 {
+      background-color: #ffffff; 
+      border-radius: 8px;
+      margin: 10px;
     }
 
     .Welcome {
-      border-radius: 8px; /* Add border radius to the text container */
-      padding: 15px; /* Add some padding for better visual appearance */
+      border-radius: 8px;
+      padding: 15px;
     }
     .main-content {
-    margin-left: 250px; /* Same as the width of your sidebar */
+    margin-left: 250px;
     padding: 1em;
     }
     
     .recommendation-box {
-        width: 50px; /* Adjust the width as needed */
-        height: 30px; /* Adjust the height as needed */
-        margin: 5px; /* Add margin for spacing between boxes */
+        width: 50px;
+        height: 30px;
+        margin: 5px; 
     }
 
 
-    @media screen and (max-width: 768px) {
+    @media (max-width: 768px) {
         .main-content {
-            margin-left: 0; /* On smaller screens, the sidebar could be hidden or toggleable */
+            margin-left: 0;
         }
+        .sidebar {
+          width: auto;
+        }
+        
     }
-    @media screen and (min-width: 768px) {
+    @media (min-width: 768px) {
         .welcome-column {
             display: none;
         }

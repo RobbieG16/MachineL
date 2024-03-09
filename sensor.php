@@ -84,9 +84,12 @@ $allSensorData = getLatestSensorData();
     padding: 1em;
 }
 
-@media screen and (max-width: 768px) {
-    .main-content {
-        margin-left: 0; /* On smaller screens, the sidebar could be hidden or toggleable */
+@media (max-width: 768px) {
+        .main-content {
+            margin-left: 0; 
+        }
+        .sidebar {
+          width: auto;
+        }
     }
-}
 </style>

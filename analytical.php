@@ -25,11 +25,31 @@ if ($result) {
     $result->free();
 }
 
+// $link->close();
+
+// Function to get the latest average sensor data for all sensors
+function getLatestSensorData() {
+    global $link; // Use the database connection from config.php
+    $sensorData = [];
+
+    for ($sensorId = 1; $sensorId <= 3; $sensorId++) {
+        $sql = "SELECT * FROM `rawsensor{$sensorId}` ORDER BY `reading_time` DESC LIMIT 1";
+        $result = mysqli_query($link, $sql);
+
+        if ($result) {
+            $sensorData[$sensorId] = mysqli_fetch_assoc($result);
+        } else {
+            $sensorData[$sensorId] = null; // Handle the case where there is no data
+        }
+    }
+
+    return $sensorData;
+}
+
+// Get the data for all sensors
+$allSensorData = getLatestSensorData();
 $link->close();
-
-// Now you can pass these arrays to JavaScript as before and use them to create Highcharts
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,28 +67,131 @@ $link->close();
 <?php include 'sidebar.php'; ?>
 
 <div class="main-content">
-    <!-- Container for the Highcharts graph -->
+    <h2 class="mb-4">Analytics</h2>
+    <div class="container">
+        <div class="row pick-nutrient">
+            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check" name="btnradio" id="nitrogen" autocomplete="off" checked>                    <label class="btn btn-outline-primary" for="btnradio1">Nitrogen</label>
 
-    <div class="row">
-        <div class="col-lg-4">
-            <div id="airTempChart" style="height: 400px;" class="chart-container"></div> 
-        </div>
+                <input type="radio" class="btn-check" name="btnradio" id="phosphorus" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btnradio2">Phosphorus</label>
 
-        <div class="col-lg-4">
-            <div id="soilTempChart" style="height: 400px;" class="chart-container"></div> 
+                <input type="radio" class="btn-check" name="btnradio" id="potassium" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btnradio3">Potassium</label>
+                
+                <input type="radio" class="btn-check" name="btnradio" id="temperature" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btnradio1">Temperature</label>
+
+                <input type="radio" class="btn-check" name="btnradio" id="moisture" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btnradio2">Moisture</label>
+
+                </div>
+            </div>
+        <div class="row sensor-specs">
+            <div class="col value-time">
+                <div class="row title">
+                    <h4>Nitrogen</h4>
+                </div>
+                <div class="row sensor">
+                    <h6>Sensor 1</h6>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Timestamp</th>
+                                <th class="valuee" scope="col">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($allSensorData as $sensorId => $data): ?>
+                            <tr>
+                                <td><?php echo $data ? htmlspecialchars($data['reading_time']) : 'N/A';?></td>
+                                <td class="values"><?php echo $data ? htmlspecialchars($data['nitrogen']) : 'N/A';?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+
+                    <h6>Sensor 2</h6>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Timestamp</th>
+                                <th class="valuee" scope="col">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($allSensorData as $sensorId => $data): ?>
+                            <tr>
+                                <td><?php echo $data ? htmlspecialchars($data['reading_time']) : 'N/A';?></td>
+                                <td class="values"><?php echo $data ? htmlspecialchars($data['nitrogen']) : 'N/A';?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+
+                    <h6>Sensor 3</h6>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Timestamp</th>
+                                <th class="valuee" scope="col">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($allSensorData as $sensorId => $data): ?>
+                            <tr>
+                                <td><?php echo $data ? htmlspecialchars($data['reading_time']) : 'N/A';?></td>
+                                <td class="values"><?php echo $data ? htmlspecialchars($data['nitrogen']) : 'N/A';?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="col trends-insights">
+                <div class="row trends">
+                    <h4>Nitrogen Trend Chart</h4>
+                    <div class="row">
+                        <div id="nitrogenChart" style="height: 400px;" class="chart-container"></div> 
+                    </div>
+                </div>
+                <div class="row insights">
+                    <h4>Insights</h4>
+                    <div class="row">
+                        
+                    </div>
+                </div>
+            </div>
+
+
         </div>
-        <div class="col-lg-4">
-            <div id="nitrogenChart" style="height: 400px;" class="chart-container"></div> 
-        </div>
-        <div class="col-lg-4">
-            <div id="phosphorusChart" style="height: 400px;" class="chart-container"></div> 
-        </div>
-        <div class="col-lg-4">
-            <div id="potassiumChart" style="height: 400px;" class="chart-container"></div> 
-        </div>
+            
         
-    </div>
+        <div class="chart-container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div id="airTempChart" style="height: 400px;" class="chart-container"></div> 
+                </div>
 
+                <div class="col-lg-4">
+                    <div id="soilTempChart" style="height: 400px;" class="chart-container"></div> 
+                </div>
+                <div class="col-lg-4">
+                    <div id="nitrogenChart" style="height: 400px;" class="chart-container"></div> 
+                </div>
+                <div class="col-lg-4">
+                    <div id="phosphorusChart" style="height: 400px;" class="chart-container"></div> 
+                </div>
+                <div class="col-lg-4">
+                    <div id="potassiumChart" style="height: 400px;" class="chart-container"></div> 
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
     <script>
     // Pass PHP array to JavaScript
     var airTempData = <?php echo json_encode($all_air_temp); ?>;
@@ -132,11 +255,11 @@ $link->close();
         },
         yAxis: {
             title: {
-                text: 'N:'
+                text: 'Values'
             }
         },
         series: [{
-            name: 'Nitrogen',
+            name: 'Time',
             data: nitrogenData.map(Number) // Ensure data is in Number format
         }]
     });
@@ -193,31 +316,62 @@ $link->close();
 </body>
 </html>
 <style>
-    .main-content {
-    margin-left: 250px; /* Same as the width of your sidebar */
-    padding: 1em;
-}
-
-@media screen and (max-width: 768px) {
-    .main-content {
-        margin-left: 0; /* On smaller screens, the sidebar could be hidden or toggleable */
+    @import url(https://fonts.googleapis.com/css?family=Poppins:100,100italic,200,200italic,300,300italic,regular,italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic);
+    :root {
+        --primary-color: #f90a39;
+        --text-color: #1d1d1d;
+        --bg-color: #f1f1fb;
     }
-}
-.chart-container {
-    border: 1px solid #ddd; /* Add a border */
-    padding: 10px;
-    background-color: #fff; /* Add a background color if you like */
-    margin-bottom: 20px; /* Add some space between the rows of charts */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Adds a subtle shadow to make the charts 'pop' a bit */
-}
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+            
+    }
+    body {
+      background-color: #EDEDEC;
+    }
+
+    .main-content {
+    margin-left: 250px;
+    padding: 1em;
+    }
+    .pick-nutrient{
+      margin-bottom: 20px;
+    }
+
+    .chart-container, .value-time  {
+        padding: 10px;
+        background-color: #ffffff;
+        margin-bottom: 10px;
+        border-radius: 8px;
+
+    }
+    .sensor-specs{
+        padding: 10px;
+        border-radius: 8px;
+    }
+    .trends, .insights{
+        padding: 10px;
+        margin-left: 10px;
+        background-color: #ffffff;
+        margin-bottom: 10px;
+        border-radius: 8px;
+    }
 
 /* Highcharts specific styling */
 .highcharts-figure, .highcharts-data-table table {
-    min-width: 320px; /* Adjust minimum width as needed */
-    max-width: 660px; /* Adjust maximum width as needed */
+    min-width: 320px;
+    max-width: 660px;
     margin: 1em auto;
 }
-
+h6{
+    color: red;
+}
+    .values, .valuee{
+        color:green;
+    }
 @media (max-width: 768px) {
     .main-content {
         margin-left: 0;

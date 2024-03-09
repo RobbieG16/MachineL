@@ -70,30 +70,30 @@ $allSensorData = getLatestSensorData();
             <div class="row">
             <div class="col-sm-8 sensor">
                 <div class="row sensor-header">
-    <table class="table table-bordered">
-        <thead class="thead-dark">
-            <tr>
-               
-                <th scope="col">Nitrogen</th>
-                <th scope="col">Phosphorus</th>
-                <th scope="col">Potassium</th>
-                <th scope="col">Air Temp</th>
-                <th scope="col">Soil Temp</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($allSensorData as $sensorId => $data): ?>
-                <tr>
-                    
-                    <td><?php echo $data ? htmlspecialchars($data['reading_time']) : 'N/A'; echo "<span>  &nbsp  &nbsp  &nbsp </span>"; echo $data ? htmlspecialchars($data['nitrogen']) : 'N/A';?></td>
-                    <td><?php echo $data ? htmlspecialchars($data['reading_time']) : 'N/A'; echo "<span>  &nbsp  &nbsp  &nbsp </span>"; echo $data ? htmlspecialchars($data['phosphorus']) : 'N/A';?></td>
-                    <td><?php echo $data ? htmlspecialchars($data['reading_time']) : 'N/A'; echo "<span>  &nbsp  &nbsp  &nbsp </span>"; echo $data ? htmlspecialchars($data['potassium']) : 'N/A';?></td>
-                    <td><?php echo $data ? htmlspecialchars($data['reading_time']) : 'N/A'; echo "<span>  &nbsp  &nbsp  &nbsp </span>"; echo $data ? htmlspecialchars($data['air_temp']) : 'N/A';?></td>
-                    <td><?php echo $data ? htmlspecialchars($data['reading_time']) : 'N/A'; echo "<span>  &nbsp  &nbsp  &nbsp </span>"; echo $data ? htmlspecialchars($data['soil_temperature']) : 'N/A';?></td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+                    <table class="table table-bordered">
+                        <thead class="thead-dark">
+                            <tr>
+                            
+                                <th scope="col">Nitrogen</th>
+                                <th scope="col">Phosphorus</th>
+                                <th scope="col">Potassium</th>
+                                <th scope="col">Air Temp</th>
+                                <th scope="col">Soil Temp</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($allSensorData as $sensorId => $data): ?>
+                                <tr>
+                                    
+                                    <td><?php echo $data ? htmlspecialchars($data['reading_time']) : 'N/A'; echo "<span>  &nbsp  &nbsp  &nbsp </span>"; echo $data ? htmlspecialchars($data['nitrogen']) : 'N/A';?></td>
+                                    <td><?php echo $data ? htmlspecialchars($data['reading_time']) : 'N/A'; echo "<span>  &nbsp  &nbsp  &nbsp </span>"; echo $data ? htmlspecialchars($data['phosphorus']) : 'N/A';?></td>
+                                    <td><?php echo $data ? htmlspecialchars($data['reading_time']) : 'N/A'; echo "<span>  &nbsp  &nbsp  &nbsp </span>"; echo $data ? htmlspecialchars($data['potassium']) : 'N/A';?></td>
+                                    <td><?php echo $data ? htmlspecialchars($data['reading_time']) : 'N/A'; echo "<span>  &nbsp  &nbsp  &nbsp </span>"; echo $data ? htmlspecialchars($data['air_temp']) : 'N/A';?></td>
+                                    <td><?php echo $data ? htmlspecialchars($data['reading_time']) : 'N/A'; echo "<span>  &nbsp  &nbsp  &nbsp </span>"; echo $data ? htmlspecialchars($data['soil_temperature']) : 'N/A';?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
             </div>
 
         </div>
@@ -155,8 +155,8 @@ $allSensorData = getLatestSensorData();
     }
 
     .main-content {
-      border-radius: 10px; /* Add border radius to the main content */
-      padding: 20px; /* Add some padding for better visual appearance */
+    margin-left: 250px; /* Same as the width of your sidebar */
+    padding: 1em;
     }
 
     .container .col, .col-sm-8, .col-sm-4 {
@@ -179,9 +179,12 @@ $allSensorData = getLatestSensorData();
     }
 
 
-    @media screen and (max-width: 768px) {
+    @media (max-width: 768px) {
         .main-content {
-            margin-left: 0; /* On smaller screens, the sidebar could be hidden or toggleable */
+            margin-left: 0; 
+        }
+        .sidebar {
+          width: auto;
         }
     }
     @media screen and (min-width: 768px) {

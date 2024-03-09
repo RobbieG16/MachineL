@@ -122,4 +122,21 @@
       color: #FF0000; 
       font-weight: bold; 
     }
+    .main-content {
+    margin-left: 250px; /* Same as the width of your sidebar */
+    padding: 1em;
+    }
+    @media (max-width: 768px) {
+        .main-content {
+            margin-left: 0; 
+        }
+        .sidebar {
+          width: auto;
+        }
+    }
+    /* @media screen and (min-width: 768px) {
+        .welcome-column {
+            display: none;
+        }
+    } */
   </style>
