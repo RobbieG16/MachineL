@@ -178,7 +178,7 @@ $allSensorData = getLatestSensorData();
         margin: 5px; /* Add margin for spacing between boxes */
     }
 
-
+   
     @media (max-width: 768px) {
         .main-content {
             margin-left: 0; 
