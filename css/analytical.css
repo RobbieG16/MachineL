@@ -20,8 +20,15 @@ padding: 1em;
 
 }
 .sensor-specs{
-    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+    padding-top: 20px;;
     border-radius: 8px;
+}
+.trends-insights{
+    display: flex;
+    flex-wrap: wrap;
 }
 .trends, .insights{
     padding: 10px;
