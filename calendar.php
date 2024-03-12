@@ -1,12 +1,12 @@
 <?php
-# Initialize the session
-session_start();
+// # Initialize the session
+// session_start();
 
-# If user is not logged in then redirect him to login page
-if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== TRUE) {
-  echo "<script>" . "window.location.href='./login.php';" . "</script>";
-  exit;
-}
+// # If user is not logged in then redirect him to login page
+// if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== TRUE) {
+//   echo "<script>" . "window.location.href='./login.php';" . "</script>";
+//   exit;
+// }
 ?>
 
 <!DOCTYPE html>
@@ -20,6 +20,8 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== TRUE) {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
   <link rel="stylesheet" href="./css/main.css">
   <link rel="shortcut icon" href="./img/l1.gif" type="image/x-icon">
+  <link rel="stylesheet" href="./css/calendar.css">
+
 </head>
 
 <body>
@@ -270,217 +272,3 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== TRUE) {
 </body>
 
 </html>
-<style>
-   
-        @import url(https://fonts.googleapis.com/css?family=Poppins:100,100italic,200,200italic,300,300italic,regular,italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic);
-
-        :root {
-            --primary-color: #f90a39;
-            --text-color: #1d1d1d;
-            --bg-color: #f1f1fb;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            
-        }
-
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-        }
-
-        .calendar-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .calendar, .calendar2 {
-            margin: 10px; /* Adds space between calendars */
-        }
-
-        .calendar,
-        .calendar2 {
-            width: 100%;
-            max-width: 600px;
-            padding: 30px 20px;
-            border-radius: 10px;
-            background-color: var(--bg-color);
-            margin-bottom: 20px;
-        }
-
-        .calendar .header,
-        .calendar2 .header2 {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #ccc;
-        }
-
-        .calendar .header .month,
-        .calendar2 .header2 .month2 {
-            display: flex;
-            align-items: center;
-            font-size: 25px;
-            font-weight: 600;
-            color: var(--text-color);
-        }
-
-        .calendar .header .btns,
-        .calendar2 .header2 .btns2 {
-            display: flex;
-            gap: 10px;
-        }
-
-        .calendar .header .btns .btn,
-        .calendar2 .header2 .btns2 .btn2 {
-            width: 50px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 5px;
-            color: #fff;
-            background-color: var(--primary-color);
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .calendar .header .btns .btn:hover,
-        .calendar2 .header2 .btns2 .btn2:hover {
-            background-color: #db0933;
-            transform: scale(1.05);
-        }
-
-        .weekdays,
-        .weekdays2 {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .weekdays .day,
-        .weekdays2 .day2 {
-            width: calc(100% / 7 - 10px);
-            text-align: center;
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .days,
-        .days2 {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .days .day,
-        .days2 .day2 {
-            width: calc(100% / 7 - 10px);
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 5px;
-            font-size: 16px;
-            font-weight: 400;
-            color: var(--text-color);
-            background-color: #fff;
-            transition: all 0.3s;
-        }
-
-        .days .day:not(.next):not(.prev):hover,
-        .days2 .day2:not(.next2):not(.prev2):hover {
-            color: #fff;
-            background-color: var(--primary-color);
-            transform: scale(1.05);
-        }
-
-        .days .day.today,
-        .days2 .day2.today2 {
-            color: #fff;
-            background-color: var(--primary-color);
-        }
-
-        .days .day.next,
-        .days .day.prev,
-        .days2 .day2.next2,
-        .days2 .day2.prev2 {
-            color: #ccc;
-        }
-        .calendar-row {
-            display: flex;
-            justify-content: center;
-        }
-        .margin-top-custom {
-            margin-top: 20px;
-        }
-        .legend .legends{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #ccc;
-        }
-        
-        .legend-container{
-            display: flex;
-            align-items: center;
-            justify-content: center;    
-
-        }
-        .legend-color {
-            width: 40px;
-            height: 40px;
-            /* display: inline-block; */
-            margin-right: 10px;
-        }
-        .legend-label{
-            font-size: 20px;
-            font-weight: 600;            
-        }
-        .threshold-item{
-            display: flex;
-            align-items: flex-center;
-            padding: 10px;
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .calendar2 .udarbe {
-        margin-top: -180px;
-        margin-left: -150px;
-    }
-    .calendar2 {
-        margin-top: 20px;
-        margin-bottom: 40px;
-    }
-
-    .thresholds-item {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-    }
-   
-    .main-content {
-    margin-left: 250px; /* Same as the width of your sidebar */
-    padding: 1em;
-}
-.margin-bottom-corn {
-        margin-bottom: 20px; /* Adjust the value as needed */
-    }
-
-@media screen and (max-width: 768px) {
-    .main-content {
-        margin-left: 0; /* On smaller screens, the sidebar could be hidden or toggleable */
-    }
-}
-</style>

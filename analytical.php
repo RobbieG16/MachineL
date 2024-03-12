@@ -1,35 +1,104 @@
 <?php
-// Include the database configuration file
+// Function to generate nutrient-specs structure
+function generateNutrientSpecs($nutrient, $sensorData) {
+    ?>
+    <!-- <?php echo strtoupper($nutrient); ?> -->
+    <div class="row sensor-specs" id="<?php echo $nutrient; ?>-specs">
+        <div class="col value-time">
+            <div class="row title">
+                <h4><?php echo ucfirst($nutrient); ?></h4>
+            </div>
+            <div class="row sensor">
+                <?php foreach ($sensorData as $sensorId => $sensorDataArray): ?>
+                    <h6>Sensor <?php echo $sensorId; ?></h6>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Timestamp</th>
+                                <th class="valuee" scope="col">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($sensorDataArray as $data): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($data['reading_time']); ?></td>
+                                    <td class="values"><?php echo htmlspecialchars($data[$nutrient]); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <div class="col trends-insights">
+            <div class="row trends">
+                <h4><?php echo ucfirst($nutrient); ?> Trend Chart</h4>
+                <div class="row">
+                    <div id="<?php echo $nutrient; ?>Chart" style="height: 400px;" class="chart-container"></div>
+                </div>
+            </div>
+            <div class="row insights">
+                <h4>Insights</h4>
+                <div class="row">
+                    <!-- Add insights content if needed -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
+}
+
 require_once 'config.php';
 
-// Initialize arrays to hold the data for each column
-$all_air_temp = array();
-$all_soil_temperature = array();
-$all_nitrogen = array();
-$all_phosphorus = array();
-$all_potassium = array();
+$air_temp = array();
+$soil_temp = array();
+$nitrogen = array();
+$phosphorus = array();
+$potassium = array();
+$soil_moisture = array();
 
-// Query the database to get the data for all columns
-$query = "SELECT all_air_temp, all_soil_temperature, all_nitrogen, all_phosphorus, all_potassium FROM overall_data";
+$query = "SELECT air_temp, soil_temp, soil_moisture, nitrogen, phosphorus, potassium FROM rawsensor1";
 $result = $link->query($query);
 
 if ($result) {
-    // Fetch the data and store it in their respective arrays
     while ($row = $result->fetch_assoc()) {
-        $all_air_temp[] = $row['all_air_temp'];
-        $all_soil_temperature[] = $row['all_soil_temperature'];
-        $all_nitrogen[] = $row['all_nitrogen'];
-        $all_phosphorus[] = $row['all_phosphorus'];
-        $all_potassium[] = $row['all_potassium'];
+        $air_temp[] = $row['air_temp'];
+        $soil_temp[] = $row['soil_temp'];
+        $nitrogen[] = $row['nitrogen'];
+        $phosphorus[] = $row['phosphorus'];
+        $potassium[] = $row['potassium'];
+        $soil_moisture[] = $row['soil_moisture'];
     }
     $result->free();
 }
 
+function getLatestSensorData() {
+    global $link;
+    $allSensorData = [];
+
+    for ($sensorId = 1; $sensorId <= 3; $sensorId++) {
+        $tableName = "rawsensor{$sensorId}";
+        $sql = "SELECT * FROM `$tableName` ORDER BY `reading_time` DESC LIMIT 8";
+        $result = mysqli_query($link, $sql);
+
+        $sensorData = [];
+
+        if ($result) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $sensorData[] = $row;
+            }
+        }
+
+        $allSensorData[$sensorId] = $sensorData;
+    }
+
+    return $allSensorData;
+}
+
+// Get the data for all sensors
+$SensorData = getLatestSensorData();
 $link->close();
-
-// Now you can pass these arrays to JavaScript as before and use them to create Highcharts
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,198 +108,115 @@ $link->close();
   <title>Analyticals</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
   <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/analytical.css">
+
   <link rel="shortcut icon" href="./img/l1.gif" type="image/x-icon">
     
     <script src="https://code.highcharts.com/highcharts.js"></script>
 </head>
 <body>
-<?php include 'sidebar.php'; ?>
+    <?php include 'sidebar.php'; ?>
 
-<div class="main-content">
-    <!-- Container for the Highcharts graph -->
+    <div class="main-content">
+        <h2 class="mb-4">Analytics</h2>
+        <div class="container-fluid">
+            <div class="row pick-nutrient">
+                <div class="btn-group pick-nutrient" role="group" aria-label="Basic radio toggle button group">
+                    <input type="radio" class="btn-check" name="btnradio" id="nitrogen" autocomplete="off" checked>
+                    <label class="btn btn-outline-primary" for="nitrogen">Nitrogen</label>
 
-    <div class="row">
-        <div class="col-lg-4">
-            <div id="airTempChart" style="height: 400px;" class="chart-container"></div> 
-        </div>
+                    <input type="radio" class="btn-check" name="btnradio" id="phosphorus" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="phosphorus">Phosphorus</label>
 
-        <div class="col-lg-4">
-            <div id="soilTempChart" style="height: 400px;" class="chart-container"></div> 
-        </div>
-        <div class="col-lg-4">
-            <div id="nitrogenChart" style="height: 400px;" class="chart-container"></div> 
-        </div>
-        <div class="col-lg-4">
-            <div id="phosphorusChart" style="height: 400px;" class="chart-container"></div> 
-        </div>
-        <div class="col-lg-4">
-            <div id="potassiumChart" style="height: 400px;" class="chart-container"></div> 
-        </div>
+                    <input type="radio" class="btn-check" name="btnradio" id="potassium" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="potassium">Potassium</label>
+                    
+                    <input type="radio" class="btn-check" name="btnradio" id="air_temp" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="air_temp">Air Temperature</label>
+
+                    <input type="radio" class="btn-check" name="btnradio" id="soil_temp" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="soil_temp">Soil Temperature</label>
+
+                    <input type="radio" class="btn-check" name="btnradio" id="soil_moisture" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="soil_moisture">Soil Moisture</label>
+                </div>
+                
+            </div>
+
+            <?php
+            // List of nutrients
+            $nutrients = ['nitrogen', 'phosphorus', 'potassium', 'air_temp', 'soil_temp', 'soil_moisture'];
+            
+            // Loop through nutrients and generate nutrient-specs structure
+            foreach ($nutrients as $nutrient) {
+                generateNutrientSpecs($nutrient, $SensorData);
+            }
+            ?>
+
         
+            <script>
+                // Pass PHP arrays to JavaScript for chart generation
+                var air_tempData = <?php echo json_encode($air_temp); ?>;
+                var soil_tempData = <?php echo json_encode($soil_temp); ?>;
+                var nitrogenData = <?php echo json_encode($nitrogen); ?>;
+                var phosphorusData = <?php echo json_encode($phosphorus); ?>;
+                var potassiumData = <?php echo json_encode($potassium); ?>;
+                var soil_moistureData = <?php echo json_encode($soil_moisture); ?>;
+
+                // Loop through nutrients and generate Highcharts charts
+                <?php foreach ($nutrients as $nutrient) : ?>
+                    Highcharts.chart('<?php echo $nutrient; ?>Chart', {
+                        chart: {
+                            type: 'line'
+                        },
+                        title: {
+                            text: '<?php echo ucfirst($nutrient); ?> Over Time'
+                        },
+                        xAxis: {
+                            // Optionally, add categories or labels if necessary, e.g., timestamps
+                        },
+                        yAxis: {
+                            title: {
+                                text: '<?php echo ($nutrient === "air_temp" || $nutrient === "soil_temp" || $nutrient === "soil_moisture") ? "Temperature (°C)" : "Values"; ?>'
+                            }
+                        },
+                        series: [{
+                            name: '<?php echo ucfirst($nutrient); ?>',
+                            data: <?php echo "{$nutrient}Data"; ?>.map(Number) // Ensure data is in Number format
+                        }]
+                    });
+                <?php endforeach; ?>
+            </script>
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    var nutrientRadios = document.querySelectorAll('.pick-nutrient .btn-check');
+                    var sensorSpecs = document.querySelectorAll('.sensor-specs');
+
+                    // Hide all sensor-specs sections initially
+                    sensorSpecs.forEach(function (spec) {
+                        spec.style.display = 'none';
+                    });
+
+                    var initialNutrient = 'nitrogen';
+                    document.getElementById(initialNutrient + '-specs').style.display = '';
+
+                    nutrientRadios.forEach(function (radio) {
+                        radio.addEventListener('change', function () {
+                            sensorSpecs.forEach(function (spec) {
+                                spec.style.display = 'none';
+                            });
+
+                            var selectedNutrient = document.querySelector('.pick-nutrient .btn-check:checked').id;
+                            var selectedSpecs = document.getElementById(selectedNutrient + '-specs');
+                            if (selectedSpecs) {
+                                selectedSpecs.style.display = '';
+                            }
+                        });
+                    });
+                });
+            </script>
+        </div>
     </div>
-
-    <script>
-    // Pass PHP array to JavaScript
-    var airTempData = <?php echo json_encode($all_air_temp); ?>;
-    
-    Highcharts.chart('airTempChart', {
-        chart: {
-            type: 'line'
-        },
-        title: {
-            text: 'Air Temperature Over Time'
-        },
-        xAxis: {
-            // Optionally, add categories or labels if necessary, e.g., timestamps
-        },
-        yAxis: {
-            title: {
-                text: 'Temperature (°C)'
-            }
-        },
-        series: [{
-            name: 'Air Temperature',
-            data: airTempData.map(Number) // Ensure data is in Number format
-        }]
-    });
-
-
-    var soilData = <?php echo json_encode($all_soil_temperature); ?>;
-    
-    Highcharts.chart('soilTempChart', {
-        chart: {
-            type: 'line'
-        },
-        title: {
-            text: ' Soil Temperature Over Time'
-        },
-        xAxis: {
-            // Optionally, add categories or labels if necessary, e.g., timestamps
-        },
-        yAxis: {
-            title: {
-                text: 'Temperature (°C)'
-            }
-        },
-        series: [{
-            name: 'Soil Temperature',
-            data: soilData.map(Number) // Ensure data is in Number format
-        }]
-    });
-
-    var nitrogenData = <?php echo json_encode($all_nitrogen); ?>;
-    
-    Highcharts.chart('nitrogenChart', {
-        chart: {
-            type: 'line'
-        },
-        title: {
-            text: ' Nitrogen Over Time'
-        },
-        xAxis: {
-            // Optionally, add categories or labels if necessary, e.g., timestamps
-        },
-        yAxis: {
-            title: {
-                text: 'N:'
-            }
-        },
-        series: [{
-            name: 'Nitrogen',
-            data: nitrogenData.map(Number) // Ensure data is in Number format
-        }]
-    });
-
-    var phosphorusData = <?php echo json_encode($all_phosphorus); ?>;
-    
-    Highcharts.chart('phosphorusChart', {
-        chart: {
-            type: 'line'
-        },
-        title: {
-            text: ' Phosphorus Over Time'
-        },
-        xAxis: {
-            // Optionally, add categories or labels if necessary, e.g., timestamps
-        },
-        yAxis: {
-            title: {
-                text: 'P:'
-            }
-        },
-        series: [{
-            name: 'Phosphorus',
-            data: phosphorusData.map(Number) // Ensure data is in Number format
-        }]
-    });
-
-    
-    var potassiumData = <?php echo json_encode($all_potassium); ?>;
-    
-    Highcharts.chart('potassiumChart', {
-        chart: {
-            type: 'line'
-        },
-        title: {
-            text: ' Potassium Over Time'
-        },
-        xAxis: {
-            // Optionally, add categories or labels if necessary, e.g., timestamps
-        },
-        yAxis: {
-            title: {
-                text: 'K:'
-            }
-        },
-        series: [{
-            name: 'Potassium',
-            data: potassiumData.map(Number) // Ensure data is in Number format
-        }]
-    });
-    </script>
-</div>
-
 </body>
 </html>
-<style>
-    .main-content {
-    margin-left: 250px; /* Same as the width of your sidebar */
-    padding: 1em;
-}
-
-@media screen and (max-width: 768px) {
-    .main-content {
-        margin-left: 0; /* On smaller screens, the sidebar could be hidden or toggleable */
-    }
-}
-.chart-container {
-    border: 1px solid #ddd; /* Add a border */
-    padding: 10px;
-    background-color: #fff; /* Add a background color if you like */
-    margin-bottom: 20px; /* Add some space between the rows of charts */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Adds a subtle shadow to make the charts 'pop' a bit */
-}
-
-/* Highcharts specific styling */
-.highcharts-figure, .highcharts-data-table table {
-    min-width: 320px; /* Adjust minimum width as needed */
-    max-width: 660px; /* Adjust maximum width as needed */
-    margin: 1em auto;
-}
-
-@media (max-width: 768px) {
-    .main-content {
-        margin-left: 0;
-    }
-    .sidebar {
-        width: auto;
-    }
-    .chart-container {
-        margin-bottom: 0;
-    }
-    .highcharts-figure, .highcharts-data-table table {
-        min-width: 100%;
-        max-width: 100%;
-    }
-}
-</style>

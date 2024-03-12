@@ -1,0 +1,72 @@
+@import url(https://fonts.googleapis.com/css?family=Poppins:100,100italic,200,200italic,300,300italic,regular,italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic);
+
+body {
+  background-color: #EDEDEC;
+}
+
+.main-content {
+margin-left: 250px;
+padding: 1em;
+}
+.pick-nutrient{
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.chart-container, .value-time  {
+    background-color: #ffffff;
+    margin-bottom: 10px;
+    border-radius: 8px;
+
+}
+.sensor-specs{
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+    padding-top: 20px;;
+    border-radius: 8px;
+}
+.trends-insights{
+    display: flex;
+    flex-wrap: wrap;
+}
+.trends, .insights{
+    padding: 10px;
+    background-color: #ffffff;
+    margin-bottom: 10px;
+    border-radius: 8px;
+}
+.title{
+    padding-top: 5px;
+}
+.table{
+    margin-bottom: 20px;
+}
+/* Highcharts specific styling */
+.highcharts-figure, .highcharts-data-table table {
+min-width: 320px;
+max-width: 660px;
+margin: 1em auto;
+}
+h6{
+color: red;
+}
+.values, .valuee{
+    color:green;
+}
+
+.chart-container {
+    margin-bottom: 0;
+}
+.highcharts-figure, .highcharts-data-table table {
+    min-width: 100%;
+    max-width: 100%;
+}
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0; 
+    }
+    .sidebar {
+      width: auto;
+    }
+}
