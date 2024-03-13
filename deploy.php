@@ -1,3 +1,51 @@
+<?php
+include 'config.php';
+
+// Check if the form is submitted
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Retrieve form data
+    $cropName = mysqli_real_escape_string($link, $_POST['cropName']);
+    $nutrients = array(
+        'nitrogen' => mysqli_real_escape_string($link, $_POST['nitrogen']),
+        'phosphorus' => mysqli_real_escape_string($link, $_POST['phosphorus']),
+        'potassium' => mysqli_real_escape_string($link, $_POST['potassium']),
+        'air_temp' => mysqli_real_escape_string($link, $_POST['air_temp']),
+        'soil_temp' => mysqli_real_escape_string($link, $_POST['soil_temp']),
+        'soil_moisture' => mysqli_real_escape_string($link, $_POST['soil_moisture'])
+    );
+
+    $weatherParams = array(
+        'rel_hum' => mysqli_real_escape_string($link, $_POST['rel_hum']),
+        'max_temp' => mysqli_real_escape_string($link, $_POST['max_temp']),
+        'min_temp' => mysqli_real_escape_string($link, $_POST['min_temp']),
+        'sol_rad' => mysqli_real_escape_string($link, $_POST['sol_rad']),
+        'rainfall' => mysqli_real_escape_string($link, $_POST['rainfall'])
+    );
+
+$sql = "INSERT INTO threshold (crop_name, nitrogen, phosphorus, potassium, air_temp, soil_temp, soil_moisture, rel_hum, max_temp, min_temp, sol_rad, rainfall)
+            VALUES ('$cropName', '{$nutrients['nitrogen']}', '{$nutrients['phosphorus']}', '{$nutrients['potassium']}', '{$nutrients['air_temp']}', '{$nutrients['soil_temp']}', '{$nutrients['soil_moisture']}', '{$weatherParams['rel_hum']}', '{$weatherParams['max_temp']}', '{$weatherParams['min_temp']}', '{$weatherParams['sol_rad']}', '{$weatherParams['rainfall']}')
+            ON DUPLICATE KEY UPDATE
+            nitrogen = '{$nutrients['nitrogen']}',
+            phosphorus = '{$nutrients['phosphorus']}',
+            potassium = '{$nutrients['potassium']}',
+            air_temp = '{$nutrients['air_temp']}',
+            soil_temp = '{$nutrients['soil_temp']}',
+            soil_moisture = '{$nutrients['soil_moisture']}',
+            rel_hum = '{$weatherParams['rel_hum']}',
+            max_temp = '{$weatherParams['max_temp']}',
+            min_temp = '{$weatherParams['min_temp']}',
+            sol_rad = '{$weatherParams['sol_rad']}',
+            rainfall = '{$weatherParams['rainfall']}';";
+
+    // Execute the query
+    if (mysqli_query($link, $sql)) {
+        // echo "Data inserted successfully.";
+    } else {
+        // echo "Error: " . mysqli_error($link);
+    }
+}
+?>
+
 
 
 
@@ -47,16 +95,19 @@
         
         <!-- Text field for adjustable times -->
         <form action="controller.php" method="post" onsubmit="return setAdjustableTime()">
-      <div class="input-group mb-3">
-          <input type="number" class="form-control" id="adjustableTime" name="adjustableTime" placeholder="Adjustable Time (ms)" aria-label="Adjustable Time" aria-describedby="adjustableTimeAddon">
-          <div class="input-group-append">
-              <button class="btn btn-outline-secondary" type="submit">Set</button>
+          <div class="input-group mb-3">
+              <input type="number" class="form-control" id="adjustableTime" name="adjustableTime" placeholder="Adjustable Time (ms)" aria-label="Adjustable Time" aria-describedby="adjustableTimeAddon">
+              <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="submit">Set</button>
+              </div>
           </div>
-      </div>
-  </form>
+        </form>
       </div>
       
     </div>
+
+
+
     <div class="row">
       <div class="col">
         <form action="deploy.php" method="post" onsubmit="return applyCropParameters()"> 
@@ -65,7 +116,7 @@
             <h6 class="sub-head" >Input Optimal Weather and NPK Values</h6>
             <div class="input-group mb-3 align-items-center">
               <h5 class="mr-3" >Crop name:</h5>
-              <input type="text" class="form-control" id="cropName" name="cropName" placeholder="Enter Crop Name">
+              <input type="text" class="form-control" id="cropName" name="cropName" placeholder="Rice / Corn">
             </div>
           </div>
           <div class="row p-body">
@@ -173,6 +224,69 @@
   }
 </script>
 
+
+<script>
+  function applyCropParameters() {
+    // Retrieve form data
+    const cropName = document.getElementById('cropName').value;
+    const nitrogen = document.getElementById('nitrogen').value;
+    const phosphorus = document.getElementById('phosphorus').value;
+    const potassium = document.getElementById('potassium').value;
+    const airTemp = document.getElementById('air_temp').value;
+    const soilTemp = document.getElementById('soil_temp').value;
+    const soilMoisture = document.getElementById('soil_moisture').value;
+    const relHumidity = document.getElementById('rel_hum').value;
+    const maxTemp = document.getElementById('max_temp').value;
+    const minTemp = document.getElementById('min_temp').value;
+    const solarRadiation = document.getElementById('sol_rad').value;
+    const rainfall = document.getElementById('rainfall').value;
+
+    // Prepare the alert message
+    const alertMessage = `
+      Database updated.
+      Crop name: ${cropName}
+      Nitrogen: ${nitrogen}
+      Phosphorus: ${phosphorus}
+      Potassium: ${potassium}
+      Air Temperature: ${airTemp}
+      Soil Temperature: ${soilTemp}
+      Soil Moisture: ${soilMoisture}
+      Relative Humidity: ${relHumidity}
+      Maximum Temperature: ${maxTemp}
+      Minimum Temperature: ${minTemp}
+      Solar Radiation: ${solarRadiation}
+      Rainfall: ${rainfall}
+    `;
+
+    // Display the alert message
+    alert(alertMessage);
+
+   // Send the form data to the server
+   const xhr = new XMLHttpRequest();
+    xhr.open('POST', 'deploy.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+  if (xhr.status === 200) {
+    // Parse the JSON response from the server
+    const response = JSON.parse(xhr.responseText);
+
+    // Check if the update was successful
+    if (response.success) {
+      alert("Update successful: " + response.message);
+    } else {
+      alert("Update failed: " + response.message);
+    }
+  } else {
+    alert('Error: ' + xhr.statusText);
+  }
+};
+    xhr.send(`cropName=${cropName}&nitrogen=${nitrogen}&phosphorus=${phosphorus}&potassium=${potassium}&air_temp=${airTemp}&soil_temp=${soilTemp}&soil_moisture=${soilMoisture}&rel_hum=${relHumidity}&max_temp=${maxTemp}&min_temp=${minTemp}&sol_rad=${solarRadiation}&rainfall=${rainfall}`);
+
+    // Assuming applyCropParameters should return true/false based on the success of the operation
+    return true; // Return true to allow form submission, or return false to prevent it
+  }
+</script>
+
 </body>
 
 </html>
@@ -186,7 +300,7 @@
     }
     .col {
       padding: 20px;
-      max-width: 800px; Responsive width
+      max-width: 800px; /* responsive width */
       margin: auto;
       background: white; /* Clear distinction from the background */
       border-radius: 8px; /* Softened edges */
