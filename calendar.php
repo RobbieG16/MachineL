@@ -1,12 +1,12 @@
 <?php
-// # Initialize the session
-// session_start();
+# Initialize the session
+session_start();
 
-// # If user is not logged in then redirect him to login page
-// if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== TRUE) {
-//   echo "<script>" . "window.location.href='./login.php';" . "</script>";
-//   exit;
-// }
+# If user is not logged in then redirect him to login page
+if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== TRUE) {
+  echo "<script>" . "window.location.href='./login.php';" . "</script>";
+  exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -21,6 +21,8 @@
   <link rel="stylesheet" href="./css/main.css">
   <link rel="shortcut icon" href="./img/l1.gif" type="image/x-icon">
   <link rel="stylesheet" href="./css/calendar.css">
+  <link rel="stylesheet" href="./css/button.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-*********" crossorigin="anonymous" />
 
 </head>
 
@@ -30,74 +32,95 @@
 <!-- Your main content goes here -->
 <div class="main-content">
 
-    <div class="carl" style="margin: auto;">
-        <?php include('progress.php'); ?>
-
-        <div class="row justify-content-center">
-            <div class="legend">
-                <div class="legends">
-                <h3>Legends</h3>
-                </div>
-                <div class="row">
-                <div class="col-4 text-center">
-                    <div class="legend-container">
-                        <div class="legend-color" style="background-color: green; width:"></div>
-                        <span class="legend-label">Best</span>
-                    </div>
-                </div>
-                <div class="col-4 text-center">
-                    <div class="legend-container">
-                        <div class="legend-color" style="background-color: yellow; width:"></div>
-                        <span class="legend-label">Mid</span>
-                    </div>
-                </div>
-                <div class="col-4 text-center">
-                    <div class="legend-container">
-                        <div class="legend-color" style="background-color: red; width: "></div>
-                        <span class="legend-label">Worst</span>
-                    </div>
-                </div>
-                </div>
-            </div>
+<div class="container mb-4">
+  <div class="row align-items-start">
+    <div class="col">
+      Best
+      <div class="row ">
+        <div class="box " style="background-color: red; max-width:50px;height:50px"> &nbsp 
         </div>
+      </div>   
+     </div>
+    <div class="col">
+   Average
+   <div class="row">
+   <div class="box " style="background-color: yellow; max-width:50px;height:50px;margin-left:10px"> &nbsp 
+        </div>
+   </div>
+    </div>
+    <div class="col">
+  Minimum
+  <div class="row">
+  <div class="box " style="background-color: Green; max-width:50px;height:50px;margin-left:10px"> &nbsp 
+  </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+    <div class="carl" style="margin: auto;">
 
             <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="calendar margin-top-custom">
-                        <div class="header">
-                            <div class="month"></div>
-                            <button type="button" class="btn btn-primary" id="runMLPredictionBtn">Run Machine Learning Prediction</button>
-
-                            <div class="btns">
-                                <div class="btn today-btn">
-                                    <i class="fas fa-calendar-day"></i>
-                                </div>
-                                <div class="btn prev-btn">
-                                    <i class="fas fa-chevron-left"></i>
-                                </div>
-                                <div class="btn next-btn">
-                                    <i class="fas fa-chevron-right"></i>
+                <div class="col">
+                    <h2>ML</h2>
+                    <div class="agbayani">
+                        <div class="row">
+                            <div class="header">
+                                <div class="month"></div>
+                                <!-- <button type="button" class="btn btn-primary" id="runMLPredictionBtn">Run Machine Learning Prediction</button> -->
+                                <div class="eugine">
+                                <div class="btns">
+                                    <div class="btn today-btn">
+                                        <i class="fas fa-calendar-day"></i>
+                                    </div>
+                                    <div class="btn prev-btn">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </div>
+                                    <div class="btn next-btn">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="weekdays">
-                            <div class="day">Sun</div>
-                            <div class="day">Mon</div>
-                            <div class="day">Tue</div>
-                            <div class="day">Wed</div>
-                            <div class="day">Thu</div>
-                            <div class="day">Fri</div>
-                            <div class="day">Sat</div>
+                        <div class="row">
+                            <div class="weekdays">
+                                <div class="day">Sun</div>
+                                <div class="day">Mon</div>
+                                <div class="day">Tue</div>
+                                <div class="day">Wed</div>
+                                <div class="day">Thu</div>
+                                <div class="day">Fri</div>
+                                <div class="day">Sat</div>
+                            </div>
                         </div>
-                        <div class="days">
+                        <div class="row">
+                            <div class="days">
+                            </div>
                         </div>
                     </div>
-                    <div class="calendar2 udarbe">
+                    <div class="row justify-content-center">
+                    <button class="button-62"id="runMLPredictionBtn" role="button  ">Run Machine Learning Prediction</button>
+                       
+                    </div>
+                </div> 
+                <div class="col">
+                <h2>HYBRID</h2>
+                    <div class="udarbe">
                         <div class="header2">
                             <div class="month2"></div>
-                            <button type="button" class="btn btn-primary" id="runHybridPredictionBtn">Run Hybrid Prediction</button>
+                            <div class="taguro">
                             <div class="btns2">
                                 <div class="btn today-btn2">
+                                    
                                     <i class="fas fa-calendar-day"></i>
                                 </div>
                                 <div class="btn prev-btn2">
@@ -106,6 +129,7 @@
                                 <div class="btn next-btn2">
                                     <i class="fas fa-chevron-right"></i>
                                 </div>
+                            </div>
                             </div>
                         </div>
                         <div class="weekdays2">
@@ -121,78 +145,120 @@
 
                         </div>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="calendar2 margin-top-custom">
-                        <div class="thresholds-item">
-                            <h3>Corn Thresholds</h3>
-                        </div>
-                        <div class="threshold-item">
-                            <div class="threshold-label">Air Temp: </div>
-                            <span class="threshold-value">21 - 32 Celsius</span>
-                        </div>
-                        <div class="threshold-item">
-                            <div class="threshold-label">Soil Temp: </div>
-                            <span class="threshold-value">at least 15 Celsius</span>
-                        </div>
-                        <div class="threshold-item">
-                            <div class="threshold-label">Nitrogen: </div>
-                            <span class="threshold-value">120</span>
-                        </div>
-                        <div class="threshold-item">
-                            <div class="threshold-label">Phosphorus: </div>
-                            <span class="threshold-value">60</span>
-                        </div>
-                        <div class="threshold-item">
-                            <div class="threshold-label">Potassium: </div>
-                            <span class="threshold-value">90</span>
-                        </div>
-                        <div class="threshold-item">
-                            <div class="threshold-label">Solar Radiation: </div>
-                            <span class="threshold-value">15 - 25 mJ/m2/day</span>
-                        </div>
-                        <div class="threshold-item">
-                            <div class="threshold-label">Raifnall: </div>
-                            <span class="threshold-value">25 - 50 mm</span>
-                        </div>
-
-
-                        <h3>Rice Thresholds</h3>
-                        <div class="threshold-item">
-                            <div class="threshold-label">Air Temp: </div>
-                            <span class="threshold-value">21 - 32 Celsius</span>
-                        </div>
-                        <div class="threshold-item">
-                            <div class="threshold-label">Soil Temp: </div>
-                            <span class="threshold-value">at least 15 Celsius</span>
-                        </div>
-                        <div class="threshold-item">
-                            <div class="threshold-label">Nitrogen: </div>
-                            <span class="threshold-value">120</span>
-                        </div>
-                        <div class="threshold-item">
-                            <div class="threshold-label">Phosphorus: </div>
-                            <span class="threshold-value">60</span>
-                        </div>
-                        <div class="threshold-item">
-                            <div class="threshold-label">Potassium: </div>
-                            <span class="threshold-value">90</span>
-                        </div>
-                        <div class="threshold-item">
-                            <div class="threshold-label">Solar Radiation: </div>
-                            <span class="threshold-value">15 - 25 mJ/m2/day</span>
-                        </div>
-                        <div class="threshold-item">
-                            <div class="threshold-label">Raifnall: </div>
-                            <span class="threshold-value">25 - 50 mm</span>
-                        </div>
+                    <div class="row justify-content-center">
+                    <button class="button-62"id="runMLPredictionBtn" role="button  ">Run Hybrid Prediction</button>
+                       
                     </div>
-                </div>
-                
+                </div> 
             </div>
 
-    </div>
 
+
+
+
+
+            <div class="container mt-4">
+  <div class="row align-items-start">
+    <div class="col">
+    <h3>Corn Thresholds</h3>
+    <div class="row"> 
+    <div class="threshold-item">
+    <div class="threshold-label">Soil Temp: </div>
+    <span class="threshold-value">at least 15 Celsius</span>
+    </div>
+    
+    <div class="row">    
+    <div class="threshold-item">
+    <div class="threshold-label">Nitrogen: </div>
+    <span class="threshold-value">120</span>
+    </div>
+    <div class="row">
+    <div class="threshold-item">
+    <div class="threshold-label">Phosphorus: </div>
+    <span class="threshold-value">60</span>
+    </div>
+    <div class="row">
+    <div class="threshold-item">
+                        <div class="threshold-label">Potassium: </div>
+                        <span class="threshold-value">90</span>
+                        </div>
+    <div class="row">
+    <div class="threshold-item">
+                            <div class="threshold-label">Solar Radiation: </div>
+                            <span class="threshold-value">15 - 25 mJ/m2/day</span>
+                        </div>
+                        <div class="row">
+                        <div class="threshold-item">
+                            <div class="threshold-label">Raifnall: </div>
+                            <span class="threshold-value">25 - 50 mm</span>
+                        </div>
+                        </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+   
+    <div class="col">
+    <h3>Rice Thresholds</h3>
+    <div class="row">
+    <div class="threshold-item">
+                            <div class="threshold-label">Air Temp: </div>
+                            <span class="threshold-value">21 - 32 Celsius</span>
+                        </div>
+<div class="row">
+<div class="threshold-item">
+                            <div class="threshold-label">Soil Temp: </div>
+                            <span class="threshold-value">at least 15 Celsius</span>
+                        </div>
+                        <div class="row">
+                            
+                        <div class="threshold-item">
+                            <div class="threshold-label">Nitrogen: </div>
+                            <span class="threshold-value">120</span>
+                        </div>
+                        <div class="row">
+                        <div class="threshold-item">
+                            <div class="threshold-label">Phosphorus: </div>
+                            <span class="threshold-value">60</span>
+                        </div>
+<div class="row"> <div class="threshold-item">
+                            <div class="threshold-label">Potassium: </div>
+                            <span class="threshold-value">90</span>
+                        </div>
+                        <div class="row">
+                        <div class="threshold-item">
+                            <div class="threshold-label">Solar Radiation: </div>
+                            <span class="threshold-value">15 - 25 mJ/m2/day</span>
+                        </div>
+                        <div class="row"><div class="threshold-item">
+                            <div class="threshold-label">Raifnall: </div>
+                            <span class="threshold-value">25 - 50 mm</span>
+                        </div></div>
+                        </div>
+                    </div>
+                        </div>
+                        </div>
+</div>
+    </div>
+    </div>
+  
+</div>
+            
+                        
+                    
+                    
+                        
+                       
+                        
+                      
+
+
+                        
+                        
+                       
+        
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -272,3 +338,11 @@
 </body>
 
 </html>
+
+<style>
+    .box{
+        
+        background-color: #fefbd8;
+
+    }
+</style>
