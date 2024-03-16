@@ -48,14 +48,14 @@ $allSensorData = getLatestSensorData();
     <div class="container">
         <div class="row pick-sensor">
             <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                <input type="radio" class="btn-check" name="btnradio" id="picksensor1" autocomplete="off" checked>
-                <label class="btn btn-outline-primary" for="btnradio1">Radio 1</label>
+                <input type="radio" class="btn-check" name="picksensor" id="picksensor1" autocomplete="off" checked>
+                <label class="btn btn-outline-primary" for="btnradio1">Sensor 1</label>
 
-                <input type="radio" class="btn-check" name="btnradio" id="picksensor2" autocomplete="off">
-                <label class="btn btn-outline-primary" for="btnradio2">Radio 2</label>
+                <input type="radio" class="btn-check" name="picksensor" id="picksensor2" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btnradio2">Sensor 2</label>
 
-                <input type="radio" class="btn-check" name="btnradio" id="picksensor3" autocomplete="off">
-                <label class="btn btn-outline-primary" for="btnradio3">Radio 3</label>
+                <input type="radio" class="btn-check" name="picksensor" id="picksensor3" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btnradio3">Sensor 3</label>
             </div>
         </div>
         <div class="row sensor-reading">

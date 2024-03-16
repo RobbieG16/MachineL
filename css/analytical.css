@@ -29,9 +29,10 @@ padding: 1em;
 .trends-insights{
     display: flex;
     flex-wrap: wrap;
+    padding-left: 20px;
 }
 .trends, .insights{
-    padding: 10px;
+ 
     background-color: #ffffff;
     margin-bottom: 10px;
     border-radius: 8px;
@@ -62,11 +63,19 @@ color: red;
     min-width: 100%;
     max-width: 100%;
 }
-@media (max-width: 768px) {
+@media (max-width: 1170px) {
     .main-content {
         margin-left: 0; 
     }
     .sidebar {
       width: auto;
+    }
+    .trends-insights{
+       padding: 10px;
+       display: inline-block;
+       flex-wrap: nowrap;
+    }
+    .trends{
+        max-width: 500px;
     }
 }
