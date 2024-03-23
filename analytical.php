@@ -32,11 +32,11 @@ function generateNutrientSpecs($nutrient, $sensorData) {
         </div>
         <div class="col trends-insights">
             <div class="row trends">
-                <h4><?php echo ucfirst($nutrient); ?> Trend Chart</h4>
-                <div class="row">
+                <div class="title">
+                    <h4>Trends</h4>
+                </div>
                     <div id="<?php echo $nutrient; ?>Chart" style="height: 400px;" class="chart-container"></div>
                 </div>
-            </div>
             <div class="row insights">
                 <h4>Insights</h4>
                 <div class="row">
@@ -163,6 +163,10 @@ $link->close();
                 var potassiumData = <?php echo json_encode($potassium); ?>;
                 var soil_moistureData = <?php echo json_encode($soil_moisture); ?>;
 
+                // Function to extract date from timestamp
+                function extractDate(timestamp) {
+                    return new Date(timestamp * 1000).toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+                }
                 // Loop through nutrients and generate Highcharts charts
                 <?php foreach ($nutrients as $nutrient) : ?>
                     Highcharts.chart('<?php echo $nutrient; ?>Chart', {
@@ -173,7 +177,8 @@ $link->close();
                             text: '<?php echo ucfirst($nutrient); ?> Over Time'
                         },
                         xAxis: {
-                            // Optionally, add categories or labels if necessary, e.g., timestamps
+                            categories: air_tempData.map(extractDate), // Replace air_tempData with the appropriate data array
+                            crosshair: true
                         },
                         yAxis: {
                             title: {

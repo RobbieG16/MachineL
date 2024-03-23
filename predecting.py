@@ -21,7 +21,7 @@ connection = mysql.connector.connect(
 cursor = connection.cursor()
 
 # Assuming you have a CSV file named 'your_dataset.csv'
-dataset_path = "C:/xampp/htdocs/crop/Dataset.csv"
+dataset_path = "C:/xampp/htdocs/final/Dataset.csv"
 df = pd.read_csv(dataset_path)
 
 # Replace missing values with median for 'SOLAR_RAD', 'RAINFALL', and 'HUMIDITY %'

@@ -1,0 +1,60 @@
+body {
+    background-color: #EDEDEC; /* Light background */
+  }
+  
+  .main-content {
+    margin-left: 250px; /* Same as the width of your sidebar */
+    padding: 1em;
+  }
+  
+  .col {
+    padding: 20px;
+    max-width: 800px; /* responsive width */
+    margin: auto;
+    background: white; /* Clear distinction from the background */
+    border-radius: 8px; /* Softened edges */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  }
+  
+  .row {
+    margin-bottom: 20px;
+    justify-content: center;
+  }
+  
+  .custom-select {
+    cursor: pointer; /* Indicates interactivity */
+  }
+  
+  .custom-select:focus {
+    outline: none; /* Removes default focus outline */
+    box-shadow: none; /* Removes default focus shadow */
+  }
+  
+  .output {
+    color: #FF0000;
+    font-weight: bold;
+  }
+  
+  .edit .col {
+    box-shadow: none;
+  }
+  
+  .edit .form-control {
+    width: 100px;
+  }
+  
+  @media (max-width: 768px) {
+    .main-content {
+      margin-left: 0;
+    }
+    .sidebar {
+      width: auto;
+    }
+  }
+  
+  /* @media screen and (min-width: 768px) {
+      .welcome-column {
+          display: none;
+      }
+  } */
+  

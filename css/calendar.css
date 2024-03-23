@@ -1,74 +1,77 @@
+    @import url(./global.css);
 
-   
-    @import url(https://fonts.googleapis.com/css?family=Poppins:100,100italic,200,200italic,300,300italic,regular,italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic);
 
-        :root {
-            --primary-color: #f90a39;
-            --text-color: #1d1d1d;
-            --bg-color: #f1f1fb;
-        }
-
-        * {
+        /* * {
             margin: 0;
-            padding: 0;
+            padding: 0px;
             box-sizing: border-box;
             
-        }
+        } */
 
         body {
-            display: flex;
+         
             justify-content: center;
-            align-items: flex-start;
+            background-color: #EDEDEC;
             min-height: 100vh;
         }
 
-        .calendar-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .calendar, .calendar2 {
-            margin: 10px; /* Adds space between calendars */
-        }
-
-        .calendar,
-        .calendar2 {
+        .udarbe,
+        .agbayani{
             width: 100%;
             max-width: 600px;
-            padding: 30px 20px;
+            padding: 30px;
             border-radius: 10px;
-            background-color: var(--bg-color);
             margin-bottom: 20px;
+            background-color: #ffffff;
+            justify-content: center;
+        }
+        .thresholds{
+            background-color: #ffffff;
+            border-radius: 10px;
+        }
+        .presto{
+            width: 100%;
+            max-width: 600px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            background-color: #ffffff;
+            justify-content: center;
+            padding: 10px;
         }
 
-        .calendar .header,
-        .calendar2 .header2 {
-            display: flex;
+        .header,
+        .header2 {
+     
             justify-content: space-between;
-            align-items: flex-start;
+         
             margin-bottom: 20px;
             padding-bottom: 20px;
             border-bottom: 2px solid #ccc;
         }
 
-        .calendar .header .month,
-        .calendar2 .header2 .month2 {
+        .month,
+        .month2 {
             display: flex;
             align-items: center;
             font-size: 25px;
             font-weight: 600;
             color: var(--text-color);
         }
-
-        .calendar .header .btns,
-        .calendar2 .header2 .btns2 {
+        .table .th{
+            text-align:left;
+            background-color: forestgreen;
+            padding: 8px 20px;
+            color: #ffffff;
+        }
+    
+        .btns,
+        .btns2 {
             display: flex;
             gap: 10px;
         }
 
-        .calendar .header .btns .btn,
-        .calendar2 .header2 .btns2 .btn2 {
+         .btn,
+        .btn2 {
             width: 50px;
             height: 40px;
             display: flex;
@@ -76,14 +79,14 @@
             justify-content: center;
             border-radius: 5px;
             color: #fff;
-            background-color: var(--primary-color);
+            background-color: forestgreen;
             font-size: 16px;
             cursor: pointer;
             transition: all 0.3s;
         }
 
-        .calendar .header .btns .btn:hover,
-        .calendar2 .header2 .btns2 .btn2:hover {
+        .btn:hover,
+        .btn2:hover {
             background-color: #db0933;
             transform: scale(1.05);
         }
@@ -92,11 +95,10 @@
         .weekdays2 {
             display: flex;
             gap: 10px;
-            margin-bottom: 10px;
         }
 
-        .weekdays .day,
-        .weekdays2 .day2 {
+        .day,
+        .day2 {
             width: calc(100% / 7 - 10px);
             text-align: center;
             font-size: 16px;
@@ -144,10 +146,7 @@
         .days2 .day2.prev2 {
             color: #ccc;
         }
-        .calendar-row {
-            display: flex;
-            justify-content: center;
-        }
+
         .margin-top-custom {
             margin-top: 20px;
         }
@@ -183,14 +182,8 @@
             font-weight: 600;
         }
 
-        .calendar2 .udarbe {
-        margin-top: -180px;
-        margin-left: -150px;
-    }
-    .calendar2 {
-        margin-top: 20px;
-        margin-bottom: 40px;
-    }
+
+
 
     .thresholds-item {
         display: flex;
@@ -202,12 +195,22 @@
     margin-left: 250px; /* Same as the width of your sidebar */
     padding: 1em;
 }
+
 .margin-bottom-corn {
         margin-bottom: 20px; /* Adjust the value as needed */
     }
 
-@media screen and (max-width: 768px) {
-    .main-content {
-        margin-left: 0; /* On smaller screens, the sidebar could be hidden or toggleable */
+
+    @media (max-width: 768px) {
+        .main-content {
+            margin-left: 0; 
+        }
+        .sidebar {
+          width: auto;
+        }
     }
-}
+    @media screen and (min-width: 768px) {
+        .welcome-column {
+            display: none;
+        }
+    }

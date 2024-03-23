@@ -32,7 +32,7 @@ max_rainfall_threshold = 3.0
 min_humidity_threshold = 60
 max_humidity_threshold = 70
 
-dataset_path = "C:/xampp/htdocs/crop/Dataset.csv"
+dataset_path = "C:/xampp/htdocs/final/Dataset.csv"
 df = pd.read_csv(dataset_path)
 df['DATE'] = pd.to_datetime(df['DATE'], format='%d/%m/%Y')
 

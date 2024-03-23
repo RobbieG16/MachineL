@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Poppins:100,100italic,200,200italic,300,300italic,regular,italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic);
+@import url(./global.css);
 
 body {
   background-color: #EDEDEC;
@@ -27,14 +27,16 @@ padding: 1em;
     border-radius: 8px;
 }
 .trends-insights{
-    display: flex;
-    flex-wrap: wrap;
+    padding-left: 20px;
 }
 .trends, .insights{
-    padding: 10px;
+ 
     background-color: #ffffff;
     margin-bottom: 10px;
     border-radius: 8px;
+}
+.trends{
+    height: 450px;
 }
 .title{
     padding-top: 5px;
@@ -57,16 +59,26 @@ color: red;
 
 .chart-container {
     margin-bottom: 0;
+    padding-left: 5px;
 }
 .highcharts-figure, .highcharts-data-table table {
     min-width: 100%;
     max-width: 100%;
 }
-@media (max-width: 768px) {
+
+@media (max-width: 1170px) {
     .main-content {
         margin-left: 0; 
     }
     .sidebar {
       width: auto;
+    }
+    .trends-insights{
+       padding: 10px;
+       display: inline-block;
+       flex-wrap: nowrap;
+    }
+    .trends{
+        max-width: 500px;
     }
 }
