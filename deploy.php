@@ -4,90 +4,120 @@ print_r($_POST);
 
 // Check if form data is posted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Check if the necessary keys exist in the $_POST array
-    if (isset($_POST['cropName']) && isset($_POST['nitrogen']) && isset($_POST['phosphorus']) && isset($_POST['potassium']) &&
-        isset($_POST['air_temp']) && isset($_POST['soil_temp']) && isset($_POST['soil_moisture']) &&
-        isset($_POST['rel_hum']) && isset($_POST['max_temp']) && isset($_POST['min_temp']) &&
-        isset($_POST['sol_rad']) && isset($_POST['rainfall'])) {
+  // Check if the necessary keys exist in the $_POST array
+  if (isset($_POST['cropName']) && isset($_POST['nitrogen']) && isset($_POST['phosphorus']) && isset($_POST['potassium']) &&
+      isset($_POST['air_temp']) && isset($_POST['soil_temp']) && isset($_POST['soil_moisture']) &&
+      isset($_POST['rel_hum']) &&
+      isset($_POST['sol_rad']) && isset($_POST['rainfall']) && isset($_POST['months'])) {
 
-        // Retrieve form data
-        $cropName = $_POST['cropName'];
+      // Retrieve form data
+      $cropName = $_POST['cropName'];
+      $months = $_POST['months'];
 
-        // Retrieve and parse the nutrient values
-        $nutrients = [
-            'nitrogen' => explode('-', $_POST['nitrogen']),
-            'phosphorus' => explode('-', $_POST['phosphorus']),
-            'potassium' => explode('-', $_POST['potassium']),
-            'air_temp' => explode('-', $_POST['air_temp']),
-            'soil_temp' => explode('-', $_POST['soil_temp']),
-            'soil_moisture' => explode('-', $_POST['soil_moisture']),
-        ];
+      // Check if the selected months are already associated with another crop
+      $existingMonths = array();
+      $existingCrop = '';
+      $sqlCheck = "SELECT crop_name, months FROM threshold";
+      $resultCheck = mysqli_query($link, $sqlCheck);
+      if ($resultCheck) {
+          while ($row = mysqli_fetch_assoc($resultCheck)) {
+              $existingMonths[$row['crop_name']] = explode(',', $row['months']);
+          }
+          foreach ($existingMonths as $existingCropName => $existingCropMonths) {
+              if ($existingCropName != $cropName) {
+                  $duplicateMonths = array_intersect($months, $existingCropMonths);
+                  if (!empty($duplicateMonths)) {
+                      $existingCrop = $existingCropName;
+                      break;
+                  }
+              }
+          }
+      }
 
-        // Retrieve and parse the weather parameter values
-        $weatherParams = [
-            'rel_hum' => explode('-', $_POST['rel_hum']),
-            'max_temp' => explode('-', $_POST['max_temp']),
-            'min_temp' => explode('-', $_POST['min_temp']),
-            'sol_rad' => explode('-', $_POST['sol_rad']),
-            'rainfall' => explode('-', $_POST['rainfall']),
-        ];
+      // If there are duplicate months, display an alert message and stop further processing
+      if (!empty($existingCrop)) {
+          echo "<script>alert('The selected month(s) are already associated with the crop: $existingCrop. Please remove the duplicate month(s) if you wish to continue.');</script>";
+          exit; // Stop further processing
+      }
 
-        // Prepare the SQL query
-        $sql = "INSERT INTO threshold (crop_name, 
-                  min_nitrogen, max_nitrogen,
-                  min_phosphorus, max_phosphorus,
-                  min_potassium, max_potassium,
-                  min_air_temp, max_air_temp,
-                  min_soil_temp, max_soil_temp,
-                  min_soil_moisture, max_soil_moisture,
-                  min_rel_hum, max_rel_hum,
-                  min_sol_rad, max_sol_rad,
-                  min_rainfall, max_rainfall)
-                VALUES ('$cropName', 
-                        '{$nutrients['nitrogen'][0]}', '{$nutrients['nitrogen'][1]}',
-                        '{$nutrients['phosphorus'][0]}', '{$nutrients['phosphorus'][1]}',
-                        '{$nutrients['potassium'][0]}', '{$nutrients['potassium'][1]}',
-                        '{$nutrients['air_temp'][0]}', '{$nutrients['air_temp'][1]}',
-                        '{$nutrients['soil_temp'][0]}', '{$nutrients['soil_temp'][1]}',
-                        '{$nutrients['soil_moisture'][0]}', '{$nutrients['soil_moisture'][1]}',
-                        '{$weatherParams['rel_hum'][0]}', '{$weatherParams['rel_hum'][1]}',
-                        '{$weatherParams['sol_rad'][0]}', '{$weatherParams['sol_rad'][1]}',
-                        '{$weatherParams['rainfall'][0]}', '{$weatherParams['rainfall'][1]}')
-                ON DUPLICATE KEY UPDATE
-                        min_nitrogen = '{$nutrients['nitrogen'][0]}',
-                        max_nitrogen = '{$nutrients['nitrogen'][1]}',
-                        min_phosphorus = '{$nutrients['phosphorus'][0]}',
-                        max_phosphorus = '{$nutrients['phosphorus'][1]}',
-                        min_potassium = '{$nutrients['potassium'][0]}',
-                        max_potassium = '{$nutrients['potassium'][1]}',
-                        min_air_temp = '{$nutrients['air_temp'][0]}',
-                        max_air_temp = '{$nutrients['air_temp'][1]}',
-                        min_soil_temp = '{$nutrients['soil_temp'][0]}',
-                        max_soil_temp = '{$nutrients['soil_temp'][1]}',
-                        min_soil_moisture = '{$nutrients['soil_moisture'][0]}',
-                        max_soil_moisture = '{$nutrients['soil_moisture'][1]}',
-                        min_rel_hum = '{$weatherParams['rel_hum'][0]}',
-                        max_rel_hum = '{$weatherParams['rel_hum'][1]}',
-                        min_sol_rad = '{$weatherParams['sol_rad'][0]}',
-                        max_sol_rad = '{$weatherParams['sol_rad'][1]}',
-                        min_rainfall = '{$weatherParams['rainfall'][0]}',
-                        max_rainfall = '{$weatherParams['rainfall'][1]}'";
+      // Retrieve and parse the nutrient values
+      $nutrients = [
+          'nitrogen' => explode('-', $_POST['nitrogen']),
+          'phosphorus' => explode('-', $_POST['phosphorus']),
+          'potassium' => explode('-', $_POST['potassium']),
+          'air_temp' => explode('-', $_POST['air_temp']),
+          'soil_temp' => explode('-', $_POST['soil_temp']),
+          'soil_moisture' => explode('-', $_POST['soil_moisture']),
+      ];
 
-        // Execute the query
-        if (mysqli_query($link, $sql)) {
-            echo "Data inserted successfully.";
-        } else {
-            echo "Error: " . mysqli_error($link);
-        }
-    } else {
-        // Handle the case where required form data is missing
-        echo "Error: Required form data is missing.";
-    }
+      // Retrieve and parse the weather parameter values
+      $weatherParams = [
+          'rel_hum' => explode('-', $_POST['rel_hum']),
+          'sol_rad' => explode('-', $_POST['sol_rad']),
+          'rainfall' => explode('-', $_POST['rainfall']),
+      ];
+
+      // Serialize the selected month IDs
+      $months = implode(',', $_POST['months']);
+
+      // Prepare the SQL query
+      $sql = "INSERT INTO threshold (crop_name, months,
+                min_nitrogen, max_nitrogen,
+                min_phosphorus, max_phosphorus,
+                min_potassium, max_potassium,
+                min_air_temp, max_air_temp,
+                min_soil_temp, max_soil_temp,
+                min_soil_moisture, max_soil_moisture,
+                min_rel_hum, max_rel_hum,
+                min_sol_rad, max_sol_rad,
+                min_rainfall, max_rainfall)
+              VALUES ('$cropName', '$months',
+                      '{$nutrients['nitrogen'][0]}', '{$nutrients['nitrogen'][1]}',
+                      '{$nutrients['phosphorus'][0]}', '{$nutrients['phosphorus'][1]}',
+                      '{$nutrients['potassium'][0]}', '{$nutrients['potassium'][1]}',
+                      '{$nutrients['air_temp'][0]}', '{$nutrients['air_temp'][1]}',
+                      '{$nutrients['soil_temp'][0]}', '{$nutrients['soil_temp'][1]}',
+                      '{$nutrients['soil_moisture'][0]}', '{$nutrients['soil_moisture'][1]}',
+                      '{$weatherParams['rel_hum'][0]}', '{$weatherParams['rel_hum'][1]}',
+                      '{$weatherParams['sol_rad'][0]}', '{$weatherParams['sol_rad'][1]}',
+                      '{$weatherParams['rainfall'][0]}', '{$weatherParams['rainfall'][1]}')
+              ON DUPLICATE KEY UPDATE
+                      months = '$months',
+                      min_nitrogen = '{$nutrients['nitrogen'][0]}',
+                      max_nitrogen = '{$nutrients['nitrogen'][1]}',
+                      min_phosphorus = '{$nutrients['phosphorus'][0]}',
+                      max_phosphorus = '{$nutrients['phosphorus'][1]}',
+                      min_potassium = '{$nutrients['potassium'][0]}',
+                      max_potassium = '{$nutrients['potassium'][1]}',
+                      min_air_temp = '{$nutrients['air_temp'][0]}',
+                      max_air_temp = '{$nutrients['air_temp'][1]}',
+                      min_soil_temp = '{$nutrients['soil_temp'][0]}',
+                      max_soil_temp = '{$nutrients['soil_temp'][1]}',
+                      min_soil_moisture = '{$nutrients['soil_moisture'][0]}',
+                      max_soil_moisture = '{$nutrients['soil_moisture'][1]}',
+                      min_rel_hum = '{$weatherParams['rel_hum'][0]}',
+                      max_rel_hum = '{$weatherParams['rel_hum'][1]}',
+                      min_sol_rad = '{$weatherParams['sol_rad'][0]}',
+                      max_sol_rad = '{$weatherParams['sol_rad'][1]}',
+                      min_rainfall = '{$weatherParams['rainfall'][0]}',
+                      max_rainfall = '{$weatherParams['rainfall'][1]}'";
+
+      // Execute the query
+      if (mysqli_query($link, $sql)) {
+          echo "Data inserted successfully.";
+      } else {
+          echo "Error: " . mysqli_error($link);
+      }
+  } else {
+      // Handle the case where required form data is missing
+      echo "Error: Required form data is missing.";
+  }
 } else {
-    // Handle the case where the request method is not POST
-    // echo "Error: This page only accepts POST requests.";
+  // Handle the case where the request method is not POST
+  // echo "Error: This page only accepts POST requests.";
 }
 ?>
+
 
 
 <!DOCTYPE html>
@@ -108,130 +138,155 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <?php include 'sidebar.php'; ?>
 
 <!-- Your main content goes here -->
-<div class="main-content">
+  <div class="main-content">
 
-  <h2 class="text-center mb-4">Controller</h2>
+    <h2 class="text-center mb-4">Controller</h2>
 
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col">
-        <div class="row Time-head">
-          <h4 class="text-center" >Custom Time Interval</h4>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col">
+          <div class="row Time-head">
+            <h4 class="text-center" >Custom Time Interval</h4>
 
-        </div>
-        <!-- Form -->
-        <form action="controller.php" method="post" onsubmit="return confirmChange()">
-          <label for="intervalSelect">Set Time (1 hour - 8 hours):</label>
-          <select class="custom-select" id="intervalSelect" name="interval">
-            <option value="3600000" <?php if (isset($currentInterval) && $currentInterval == 3600000) echo 'selected'; ?>>1 hour</option>
-            <option value="7200000" <?php if (isset($currentInterval) && $currentInterval == 7200000) echo 'selected'; ?>>2 hours</option>
-            <option value="10800000" <?php if (isset($currentInterval) && $currentInterval == 10800000) echo 'selected'; ?>>3 hours</option>
-            <option value="14400000" <?php if (isset($currentInterval) && $currentInterval == 14400000) echo 'selected'; ?>>4 hours</option>
-            <option value="18000000" <?php if (isset($currentInterval) && $currentInterval == 18000000) echo 'selected'; ?>>5 hours</option>
-            <option value="21600000" <?php if (isset($currentInterval) && $currentInterval == 21600000) echo 'selected'; ?>>6 hours</option>
-            <option value="25200000" <?php if (isset($currentInterval) && $currentInterval == 25200000) echo 'selected'; ?>>7 hours</option>
-            <option value="28800000" <?php if (isset($currentInterval) && $currentInterval == 28800000) echo 'selected'; ?>>8 hours</option>
-          </select>
-          <input type="submit" class="btn btn-primary mt-2 mb-4" value="Set Interval">
-        </form>
-        
-        <!-- Text field for adjustable times -->
-        <form action="controller.php" method="post" onsubmit="return setAdjustableTime()">
-          <div class="input-group mb-3">
-              <input type="number" class="form-control" id="adjustableTime" name="adjustableTime" placeholder="Adjustable Time (ms)" aria-label="Adjustable Time" aria-describedby="adjustableTimeAddon">
-              <div class="input-group-append">
-                  <button class="btn btn-outline-secondary" type="submit">Set</button>
-              </div>
           </div>
-        </form>
-      </div>
-      
-    </div>
-
-
-
-    <div class="row">
-      <div class="col">
-        <form action="deploy.php" method="post" onsubmit="return applyCropParameters()"> 
-          <div class="row p-head text-center">
-            <h4>Custom Crop Parameters</h4>
-            <h6 class="sub-head" >Input Optimal Weather and NPK Values</h6>
-            <div class="input-group mb-3 align-items-center">
-              <h5 class="mr-3" >Crop name:</h5>
-              <input type="text" class="form-control" id="cropName" name="cropName" placeholder="Rice / Corn">
+          <!-- Form -->
+          <form action="controller.php" method="post" onsubmit="return confirmChange()">
+            <label for="intervalSelect">Set Time (1 hour - 8 hours):</label>
+            <select class="custom-select" id="intervalSelect" name="interval">
+              <option value="3600000" <?php if (isset($currentInterval) && $currentInterval == 3600000) echo 'selected'; ?>>1 hour</option>
+              <option value="7200000" <?php if (isset($currentInterval) && $currentInterval == 7200000) echo 'selected'; ?>>2 hours</option>
+              <option value="10800000" <?php if (isset($currentInterval) && $currentInterval == 10800000) echo 'selected'; ?>>3 hours</option>
+              <option value="14400000" <?php if (isset($currentInterval) && $currentInterval == 14400000) echo 'selected'; ?>>4 hours</option>
+              <option value="18000000" <?php if (isset($currentInterval) && $currentInterval == 18000000) echo 'selected'; ?>>5 hours</option>
+              <option value="21600000" <?php if (isset($currentInterval) && $currentInterval == 21600000) echo 'selected'; ?>>6 hours</option>
+              <option value="25200000" <?php if (isset($currentInterval) && $currentInterval == 25200000) echo 'selected'; ?>>7 hours</option>
+              <option value="28800000" <?php if (isset($currentInterval) && $currentInterval == 28800000) echo 'selected'; ?>>8 hours</option>
+              <option value="43200000" <?php if (isset($currentInterval) && $currentInterval == 43200000) echo 'selected'; ?>>12 hours</option>
+            </select>
+            <input type="submit" class="btn btn-primary mt-2 mb-4" value="Set Interval">
+          </form>
+          
+          <!-- Text field for adjustable times -->
+          <form action="controller.php" method="post" onsubmit="return setAdjustableTime()">
+            <div class="input-group mb-3">
+                <input type="number" class="form-control" id="adjustableTime" name="adjustableTime" placeholder="Adjustable Time (ms)" aria-label="Adjustable Time" aria-describedby="adjustableTimeAddon">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="submit">Set</button>
+                </div>
             </div>
-          </div>
-          <div class="row p-body">
-              <div class="row edit">
-                <div class="col nutrients">
+          </form>
+        </div>
+        
+      </div>
+
+
+
+      <div class="row">
+        <div class="col">
+          <form action="deploy.php" method="post" onsubmit="return applyCropParameters()"> 
+            <div class="row p-head text-center">
+              <h4>Custom Crop Parameters</h4>
+              <h6 class="sub-head" >Input Optimal Weather and NPK Values</h6>
+              <div class="input-group mb-3 align-items-center">
+               <h5 class="mr-3">Crop name:</h5>
+                    <select class="form-control" id="cropName" name="cropName">
+                        <option value="Rice">Rice</option>
+                        <option value="Corn">Corn</option>
+                    </select>
+              </div>
+
+              <div class="select-months">
+                <?php
+                $months = array(
+                  "January" => 1, "February" => 2, "March" => 3, "April" => 4, "May" => 5, "June" => 6,
+                  "July" => 7, "August" => 8, "September" => 9, "October" => 10, "November" => 11, "December" => 12
+                );
+
+                foreach ($months as $month => $monthId) {
+                ?>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="month_<?php echo $monthId; ?>" name="months[]" value="<?php echo $monthId; ?>">
+                        <label class="form-check-label" for="month_<?php echo $monthId; ?>"><?php echo $month; ?></label>
+                    </div>
+                <?php
+                }
+                ?>
+            </div>
+
+
+
+
+            </div>
+            <div class="row p-body">
+                <div class="row edit">
+                  <div class="col nutrients">
+              <?php
+              $nutrients = array(
+                  "Nitrogen" => "nitrogen",
+                  "Phosphorus" => "phosphorus",
+                  "Potassium" => "potassium",
+                  "Air Temperature" => "air_temp",
+                  "Soil Temperature" => "soil_temp",
+                  "Soil Moisture" => "soil_moisture"
+              );
+
+              foreach ($nutrients as $label => $name) {
+              ?>
+                  <div class="row">
+                      <div class="input-group">
+                      <input type="text" class="form-control" id="<?php echo $name; ?>" name="<?php echo $name; ?>" placeholder="Min-Max">
+                          <span class="input-group-text">
+                            <h5 class="mr-3"><?php echo $label; ?></h5>
+                          </span>                    
+                        </div>
+                  </div>
+              <?php
+              }
+              ?>
+                  </div>
+                  <div class="col weather">
             <?php
-            $nutrients = array(
-                "Nitrogen" => "nitrogen",
-                "Phosphorus" => "phosphorus",
-                "Potassium" => "potassium",
-                "Air Temperature" => "air_temp",
-                "Soil Temperature" => "soil_temp",
-                "Soil Moisture" => "soil_moisture"
+            $weatherParams = array(
+                "Relative Humidity" => "rel_hum",
+                "Solar Radiation" => "sol_rad",
+                "Rainfall" => "rainfall"
             );
 
-            foreach ($nutrients as $label => $name) {
+            foreach ($weatherParams as $label => $name) {
             ?>
                 <div class="row">
                     <div class="input-group">
-                    <input type="text" class="form-control" id="<?php echo $name; ?>" name="<?php echo $name; ?>" placeholder="Min-Max">
+                        <input type="text" class="form-control" id="<?php echo $name; ?>" name="<?php echo $name; ?>" placeholder="°C">
                         <span class="input-group-text">
                           <h5 class="mr-3"><?php echo $label; ?></h5>
-                        </span>                    
-                      </div>
+                        </span> 
+                    </div>
                 </div>
             <?php
             }
             ?>
-                </div>
-                <div class="col weather">
-          <?php
-          $weatherParams = array(
-              "Relative Humidity" => "rel_hum",
-              // "Maximum Temperature" => "max_temp",
-              // "Minimum Temperature" => "min_temp",
-              "Solar Radiation" => "sol_rad",
-              "Rainfall" => "rainfall"
-          );
-
-          foreach ($weatherParams as $label => $name) {
-          ?>
-              <div class="row">
-                  <div class="input-group">
-                      <input type="text" class="form-control" id="<?php echo $name; ?>" name="<?php echo $name; ?>" placeholder="°C">
-                      <span class="input-group-text">
-                        <h5 class="mr-3"><?php echo $label; ?></h5>
-                      </span> 
                   </div>
-              </div>
-          <?php
-          }
-          ?>
                 </div>
-              </div>
-              <div class="row confirm">
-                <button type="submit" class="btn btn-primary mx-auto">Apply</button>
-              </div>
-          </div>
-        </form>
+                <div class="row confirm">
+                  <button type="submit" class="btn btn-primary mx-auto">Apply</button>
+                </div>
+            </div>
+          </form>
+        </div>
       </div>
+
+    </div>
     </div>
 
-  </div>
-</div>
 
 
 
-
-</div> 
+  </div> 
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 <script>
   // Function to confirm the interval change
   function confirmChange() {
@@ -268,6 +323,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 <script>
+  
   function applyCropParameters() {
     // Retrieve form data
     const cropName = document.getElementById('cropName').value;
@@ -346,9 +402,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       `min_rainfall=${weatherParams.rainfall[0]}&max_rainfall=${weatherParams.rainfall[1]}`;
       xhr.send(data);
 
-// Assuming applyCropParameters should return true/false based on the success of the operation
-return true; // Return true to allow form submission, or return false to prevent it
-}
+  // Assuming applyCropParameters should return true/false based on the success of the operation
+  return true; // Return true to allow form submission, or return false to prevent it
+  }
 </script>
 
 

@@ -10,23 +10,25 @@ function generateNutrientSpecs($nutrient, $sensorData) {
             </div>
             <div class="row sensor">
                 <?php foreach ($sensorData as $sensorId => $sensorDataArray): ?>
-                    <h6>Sensor <?php echo $sensorId; ?></h6>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Timestamp</th>
-                                <th class="valuee" scope="col">Value</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($sensorDataArray as $data): ?>
+                    <div class="col">
+                        <h6>Bed <?php echo $sensorId; ?></h6>
+                        <table class="table">
+                            <thead>
                                 <tr>
-                                    <td><?php echo htmlspecialchars($data['reading_time']); ?></td>
-                                    <td class="values"><?php echo htmlspecialchars($data[$nutrient]); ?></td>
+                                    <th scope="col">Date</th>
+                                    <th class="valuee" scope="col">Value</th>
                                 </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($sensorDataArray as $data): ?>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars(date('Y-m-d', strtotime($data['reading_time']))); ?></td>
+                                        <td class="values"><?php echo htmlspecialchars($data[$nutrient]); ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 <?php endforeach; ?>
             </div>
         </div>
@@ -105,7 +107,7 @@ $link->close();
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Analyticals</title>
+  <title>Analytics</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
   <link rel="stylesheet" href="./css/main.css">
   <link rel="stylesheet" href="./css/analytical.css">

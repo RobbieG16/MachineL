@@ -67,13 +67,13 @@ $link->close();
         <div class="row pick-sensor">
             <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
                     <input type="radio" class="btn-check" name="sensor" id="sensor1" autocomplete="off" checked value="sensor1">
-                    <label class="btn btn-outline-primary active" for="sensor1" onclick="setActive(this)">Sensor 1</label>
+                    <label class="btn btn-outline-primary active" for="sensor1" onclick="setActive(this)">Bed 1</label>
 
                     <input type="radio" class="btn-check" name="sensor" id="sensor2" autocomplete="off" value="sensor2">
-                    <label class="btn btn-outline-primary" for="sensor2" onclick="setActive(this)">Sensor 2</label>
+                    <label class="btn btn-outline-primary" for="sensor2" onclick="setActive(this)">Bed 2</label>
 
                     <input type="radio" class="btn-check" name="sensor" id="sensor3" autocomplete="off" value="sensor3">
-                    <label class="btn btn-outline-primary" for="sensor3" onclick="setActive(this)">Sensor 3</label>
+                    <label class="btn btn-outline-primary" for="sensor3" onclick="setActive(this)">Bed 3</label>
             </div>
         </div>
         <div class="row  table-responsive mb-2 mt-2">

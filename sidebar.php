@@ -6,7 +6,7 @@
     <ul class="sidebar-menu">
         <li><a href="index.php">Dashboard</a></li>
         <!-- <li><a href="sensor.php">Sensor</a></li> -->
-        <li><a href="analytical.php">Analytical</a></li>
+        <li><a href="analytical.php">Analytic</a></li>
         <li><a href="calendar.php">Calendar</a></li>
         <li><a href="process.php">Processes</a></li>
         <li><a href="deploy.php">Settings</a></li>
