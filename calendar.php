@@ -220,7 +220,7 @@
                                                 <img src="<?= $iconSrc ?>" alt="Crop Icon" style="width: 50px; height: 40px;">
                                         </div>
                                     </div>
-                                    <div id="icon-input" class="icon-input">
+                                    <div id="icon-input-2" class="icon-input-2">
                                         <div class="col">
                                         <h6>Input</h6>
 
@@ -426,12 +426,14 @@
         // Define the current month
         var currentMonth = <?= date('n') ?>;
 
-        // Function to update the month display
+        // Function to update the month display and icons
         function updateMonth(month) {
             // Update the month display
             $(".month").text(month);
-            // Update the crop icon based on the month
+            // Update the crop icon inside the icon-recommend class
             updateCropIcon(month);
+            // Update the crop icon inside the icon-input class
+            updateIconInput(month);
         }
 
         // Function to update the crop icon based on the month
@@ -446,7 +448,30 @@
             }
             $('#icon img').attr('src', iconSrc);
         }
+        function updateIconInput(month) {
+        var currentMonth = month;
+        var foundCrop = false;
+        var thresholds = <?php echo json_encode($thresholds); ?>;
 
+        // Loop through each crop and its associated month IDs
+        thresholds.forEach(function(threshold) {
+            var cropName = threshold.crop_name;
+            var months = threshold.months;
+
+            // Check if the current month matches any of the month IDs for this crop
+            if (months.includes(currentMonth)) {
+                var imageSrc = "./img/" + cropName.toLowerCase() + ".png";
+                $('#icon-input img').attr('src', imageSrc);
+                foundCrop = true;
+                return; // Exit the loop
+            }
+        });
+
+        // Display a message if no crop is found for the current month
+        if (!foundCrop) {
+            console.log("No crop found for the current month (" + currentMonth + ").");
+        }
+    }
         // Initialize the month display
         updateMonth(currentMonth);
 
@@ -486,6 +511,8 @@
                 $(".month2").text(month);
                 // Update the crop icon based on the month
                 updateCropIcon(month);
+                updateIconInput(month);
+
             }
 
             // Function to update the crop icon based on the month
@@ -500,7 +527,29 @@
                 }
                 $('#icon2 img').attr('src', iconSrc);
             }
+            function updateIconInput(month) {
+                var currentMonth = month;
+                var foundCrop = false;
+                var thresholds = <?php echo json_encode($thresholds); ?>;
 
+                // Loop through each crop and its associated month IDs
+                thresholds.forEach(function(threshold) {
+                    var cropName = threshold.crop_name;
+                    var months = threshold.months;
+
+                    // Check if the current month matches any of the month IDs for this crop
+                    if (months.includes(currentMonth)) {
+                        var imageSrc = "./img/" + cropName.toLowerCase() + ".png";
+                        $('#icon-input-2 img').attr('src', imageSrc);
+                        foundCrop = true;
+                        return; // Exit the loop
+                    }
+                });
+                // Display a message if no crop is found for the current month
+                if (!foundCrop) {
+                    console.log("No crop found for the current month (" + currentMonth + ").");
+                }
+            }
             // Initialize the month display
             updateMonth(currentMonth);
 
