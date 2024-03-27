@@ -5,7 +5,7 @@ ini_set('display_errors', 1);
 echo "Executing PHP script...<br>";
 
 // Specify the full path to the Python executable
-$pythonCommand = 'C:\Users\Deso\AppData\Local\Programs\Python\Python312\python.exe';
+$pythonCommand = 'C:\Users\ASUS\AppData\Local\Programs\Python\Python311\python.exe';
 
 // Specify the full path to the machine learning Python script
 $pythonScriptPath = "./predecting.py";
