@@ -10,33 +10,35 @@ function generateNutrientSpecs($nutrient, $sensorData) {
             </div>
             <div class="row sensor">
                 <?php foreach ($sensorData as $sensorId => $sensorDataArray): ?>
-                    <h6>Sensor <?php echo $sensorId; ?></h6>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Timestamp</th>
-                                <th class="valuee" scope="col">Value</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($sensorDataArray as $data): ?>
+                    <div class="col">
+                        <h6>Bed <?php echo $sensorId; ?></h6>
+                        <table class="table">
+                            <thead>
                                 <tr>
-                                    <td><?php echo htmlspecialchars($data['reading_time']); ?></td>
-                                    <td class="values"><?php echo htmlspecialchars($data[$nutrient]); ?></td>
+                                    <th scope="col">Date</th>
+                                    <th class="valuee" scope="col">Value</th>
                                 </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($sensorDataArray as $data): ?>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars(date('Y-m-d', strtotime($data['reading_time']))); ?></td>
+                                        <td class="values"><?php echo htmlspecialchars($data[$nutrient]); ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 <?php endforeach; ?>
             </div>
         </div>
         <div class="col trends-insights">
             <div class="row trends">
-                <h4><?php echo ucfirst($nutrient); ?> Trend Chart</h4>
-                <div class="row">
+                <div class="title">
+                    <h4>Trends</h4>
+                </div>
                     <div id="<?php echo $nutrient; ?>Chart" style="height: 400px;" class="chart-container"></div>
                 </div>
-            </div>
             <div class="row insights">
                 <h4>Insights</h4>
                 <div class="row">
@@ -105,7 +107,7 @@ $link->close();
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Analyticals</title>
+  <title>Analytics</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
   <link rel="stylesheet" href="./css/main.css">
   <link rel="stylesheet" href="./css/analytical.css">
@@ -163,6 +165,10 @@ $link->close();
                 var potassiumData = <?php echo json_encode($potassium); ?>;
                 var soil_moistureData = <?php echo json_encode($soil_moisture); ?>;
 
+                // Function to extract date from timestamp
+                function extractDate(timestamp) {
+                    return new Date(timestamp * 1000).toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+                }
                 // Loop through nutrients and generate Highcharts charts
                 <?php foreach ($nutrients as $nutrient) : ?>
                     Highcharts.chart('<?php echo $nutrient; ?>Chart', {
@@ -173,7 +179,8 @@ $link->close();
                             text: '<?php echo ucfirst($nutrient); ?> Over Time'
                         },
                         xAxis: {
-                            // Optionally, add categories or labels if necessary, e.g., timestamps
+                            categories: air_tempData.map(extractDate), // Replace air_tempData with the appropriate data array
+                            crosshair: true
                         },
                         yAxis: {
                             title: {

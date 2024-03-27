@@ -1,3 +1,50 @@
+<?php
+
+require_once 'config.php';
+
+// Define the column names to be displayed
+$displayedColumns = array(
+    'Nitrogen' => 'nitrogen',
+    'Potassium' => 'potassium',
+    'Phosphorus' => 'phosphorus',
+    'Soil Temperature' => 'soil_temp',
+    'Air Temperature' => 'air_temp',
+    'Soil Moisture' => 'soil_moisture'
+);
+
+// Array to hold the latest 3 values for each sensor
+$sensorsData = array();
+
+// Fetch the latest 3 values for each sensor column
+foreach ($displayedColumns as $displayName => $columnName) {
+    $sql = "SELECT reading_time, $columnName 
+            FROM rawsensor1 
+            ORDER BY reading_time DESC 
+            LIMIT 3";
+    
+    $result = $link->query($sql);
+
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $sensorsData[$displayName][] = array(
+                "Timestamp" => $row["reading_time"],
+                "Value" => $row[$columnName]
+            );
+        }
+    }
+}
+
+// Close connection
+$link->close();
+
+// // Print the fetched data for debugging
+// echo "<pre>";
+// print_r($sensorsData);
+// echo "</pre>";
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,209 +66,127 @@
     <div class="container">
         <div class="row pick-sensor">
             <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                <input type="radio" class="btn-check" name="picksensor" id="picksensor1" autocomplete="off" checked>
-                <label class="btn btn-outline-primary" for="btnradio1">Sensor 1</label>
+                    <input type="radio" class="btn-check" name="sensor" id="sensor1" autocomplete="off" checked value="sensor1">
+                    <label class="btn btn-outline-primary active" for="sensor1" onclick="setActive(this)">Bed 1</label>
 
-                <input type="radio" class="btn-check" name="picksensor" id="picksensor2" autocomplete="off">
-                <label class="btn btn-outline-primary" for="btnradio2">Sensor 2</label>
+                    <input type="radio" class="btn-check" name="sensor" id="sensor2" autocomplete="off" value="sensor2">
+                    <label class="btn btn-outline-primary" for="sensor2" onclick="setActive(this)">Bed 2</label>
 
-                <input type="radio" class="btn-check" name="picksensor" id="picksensor3" autocomplete="off">
-                <label class="btn btn-outline-primary" for="btnradio3">Sensor 3</label>
+                    <input type="radio" class="btn-check" name="sensor" id="sensor3" autocomplete="off" value="sensor3">
+                    <label class="btn btn-outline-primary" for="sensor3" onclick="setActive(this)">Bed 3</label>
             </div>
         </div>
-        <div class="row sensor-reading">
-            <div class="col welcome-column">
-                <div class="row">
-                    <h4>Welcome to Our Decision Support app</h4>    
-                </div>
-                <div class="row">
-                    <span class="power">powered by BSCPE</span>
-                </div>
-            </div>
-            <div class="col">
-                <div class="row">
-                    <span class="sensor-label">Nitrogen</span>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    2
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    4
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    4
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="row">
-                    <span class="sensor-label">Phosphorus</span>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    2
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    4
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    4
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="row">
-                    <span class="sensor-label">Potassium</span>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    2
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    4
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    4
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="row">
-                    <span class="sensor-label">Temperature</span>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    2
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    4
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    4
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="row">
-                    <span class="sensor-label">Moisture</span>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    2
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    4
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                    Timestamp
-                    </div>
-                    <div class="col">
-                    4
-                    </div>
-                </div>
-            </div>
-
+        <div class="row  table-responsive mb-2 mt-2">
+            
+                <table id="sensorDataTable" class=" mt-3">
+                    <tr>
+                        <th>Timestamps</th>
+                        <th>Nitrogen</th>
+                        <th>Potassium</th>
+                        <th>Phosphorus</th>
+                        <th>Soil Temp</th>
+                        <th>Air Temp</th>
+                        <th>Soil Moisture</th>
+                    </tr>
+                </table>
+            
         </div>
-        <div class="row">
-            <div class="col-sm-8 heatmap">
-                <div class="row heatmap-header">
-                    <div class="col-auto me-auto heatmap-title">Heatmap Calendar</div>
-                    <div class="col-auto pick-crop">
-                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                            <input type="radio" class="btn-check" name="btnradio" id="heatrice" autocomplete="off" checked>
-                            <label class="btn btn-outline-primary" for="btnradio1">Rice</label>
+                
+            <div class="row">
+                <div class="col-sm-8 heatmap">
+                    <div class="row heatmap-header">
+                        <div class="col-auto me-auto heatmap-title">Heatmap Calendar</div>
+                        <div class="col-auto pick-crop">
+                            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                                <input type="radio" class="btn-check" name="pickcrop" id="heatrice" autocomplete="off" checked>
+                                <label class="btn btn-outline-primary" for="heatrice">Rice</label>
 
-                            <input type="radio" class="btn-check" name="btnradio" id="heatcorn" autocomplete="off">
-                            <label class="btn btn-outline-primary" for="btnradio2">Corn</label>
+                                <input type="radio" class="btn-check" name="pickcrop" id="heatcorn" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="heatcorn">Corn</label>
+                            </div>
                         </div>
                     </div>
+                    <div class="row heatmap-body">
+                        <?php include 'heatmap.php';?>
+                    </div>
                 </div>
-                <div class="row heatmap-body">
-                    <?php include 'heatmap.php';?>
+                <div class="col-sm-4 recommendations">
+                    <div class="row rec-header">
+                        <span>Recommendations</span>
+                    </div>
+                    <div class="row">
+                        <div class="recommendation-box" style="background-color: #598A6F;"></div>
+                    </div>
+                    <div class="row">
+                        <div class="recommendation-box" style="background-color: #93F38B;"></div>
+                    </div>
+                    <div class="row">
+                        <div class="recommendation-box" style="background-color: #F9EF97;"></div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-sm-4 recommendations">
-                <div class="row rec-header">
-                    <span>Recommendations</span>
-                </div>
-                <div class="row">
-                    <div class="recommendation-box" style="background-color: #598A6F;"></div>
-                </div>
-                <div class="row">
-                    <div class="recommendation-box" style="background-color: #93F38B;"></div>
-                </div>
-                <div class="row">
-                    <div class="recommendation-box" style="background-color: #F9EF97;"></div>
-                </div>
-            </div>
 
+            </div>
         </div>
-    </div>
 </div>
 
+
+<script>
+
+        // Function to create dynamic table
+        function createDynamicTable(sensor, sensorData) {
+            let tableHTML = `<table><div class="sensor-title">${sensor}</div>`;
+            tableHTML += '<tr><th>Timestamp</th><th>Value</th></tr>';
+            sensorData.forEach(data => {
+                tableHTML += `<tr><td>${data.Timestamp}</td><td>${data.Value}</td></tr>`;
+            });
+            tableHTML += '</table>';
+            return `<div class="sensor-table">${tableHTML}</div>`;
+        }
+
+
+
+    // Function to render dynamic table for each sensor
+    function renderSensorTables(sensorsData) {
+        const dynamicTableContainer = document.getElementById('dynamic-table');
+        Object.keys(sensorsData).forEach(sensor => {
+            const sensorData = sensorsData[sensor];
+            const sensorTable = createDynamicTable(sensor, sensorData);
+            dynamicTableContainer.innerHTML += sensorTable;
+        });
+    }
+
+    // Render dynamic tables
+    renderSensorTables(<?php echo json_encode($sensorsData); ?>);
+</script>
+<script>
+        function setActive(label) {
+            // Remove active class from all labels
+            document.querySelectorAll('.btn-group label').forEach(function (element) {
+                element.classList.remove('active');
+            });
+
+            // Add active class to clicked label
+            label.classList.add('active');
+
+            // Fetch data for the selected sensor
+            fetchSensorData();
+        }
+
+        function fetchSensorData() {
+            var selectedSensor = document.querySelector('input[name="sensor"]:checked').value;
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("sensorDataTable").innerHTML = this.responseText;
+                }
+            };
+            xhttp.open("GET", "fetch_sensor_data.php?sensor=" + selectedSensor, true);
+            xhttp.send();
+        }
+
+        // Initial data load when page loads
+        fetchSensorData();
+    </script>
 </body>
 </html>
 <style>
@@ -243,7 +208,7 @@
     }
 
     .pick-sensor{
-        margin-bottom: 20px;
+        /* margin-bottom: 20px; */
     }
     .col, .col-sm-8, .col-sm-4 {
       background-color: #ffffff; 
@@ -266,6 +231,31 @@
         margin: 5px; 
     }
 
+    /* table {
+        padding: 20px;
+            border-collapse: collapse;
+            width: 100%;
+            background-color: #ffffff; 
+            border-radius: 8px;
+        } */
+        th, td {
+            text-align: center;
+            padding: 8px;
+        }
+        th{
+            background-color: forestgreen;
+            color: white;
+        }
+        .sensor-table {
+            width: 250px;
+            padding: 10px;
+        }
+        .sensor-title{
+            color: black;
+            font-weight: bold;
+            text-align: start;
+            margin-bottom: 10px;
+        }
 
     @media (max-width: 768px) {
         .main-content {
@@ -281,4 +271,30 @@
             display: none;
         }
     }
-  </style>
+</style>
+<style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 5px;
+            border-radius: 10px;
+            overflow: hidden;
+         }
+        th {
+            text-align: left;
+            background-color: forestgreen;
+            padding: 8px 20px; /* Add padding for spacing */
+            color: white; /* Change text color to white */
+        }
+        td {
+            padding: 8px 20px; /* Add padding for spacing */
+            text-align: center;
+            background-color: #f9f9f9; /* Set background color for all cells */
+        }
+        td:nth-child(odd) {
+            background-color: #f9f9f9; /* Alternate background color for odd columns */
+        }
+        .btn-check {
+            display: none;
+        }
+    </style>

@@ -1,38 +1,42 @@
+    @import url(./global.css);
 
-   
-    @import url(./css/global.css);
 
-        :root {
-            --primary-color: #f90a39;
-            --text-color: #1d1d1d;
-            --bg-color: #f1f1fb;
-        }
-
-        * {
+        /* * {
             margin: 0;
-            padding: 0;
+            padding: 0px;
             box-sizing: border-box;
             
-        }
+        } */
 
         body {
          
             justify-content: center;
-            
+            background-color: #EDEDEC;
             min-height: 100vh;
         }
 
-
         .udarbe,
-        .agbayani {
+        .agbayani{
             width: 100%;
-            max-width: 700px;
-            padding: 30px 20px;
+            max-width: 600px;
+            padding: 30px;
             border-radius: 10px;
-            background-color: var(--bg-color);
             margin-bottom: 20px;
-          
+            background-color: #ffffff;
             justify-content: center;
+        }
+        .thresholds{
+            background-color: #ffffff;
+            border-radius: 10px;
+        }
+        .presto{
+            width: 100%;
+            max-width: 600px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            background-color: #ffffff;
+            justify-content: center;
+            padding: 10px;
         }
 
         .header,
@@ -53,13 +57,13 @@
             font-weight: 600;
             color: var(--text-color);
         }
-     
-        
-     
-
-
-
-
+        .table .th{
+            text-align:left;
+            background-color: forestgreen;
+            padding: 8px 20px;
+            color: #ffffff;
+        }
+    
         .btns,
         .btns2 {
             display: flex;
@@ -75,7 +79,7 @@
             justify-content: center;
             border-radius: 5px;
             color: #fff;
-            background-color: var(--primary-color);
+            background-color: forestgreen;
             font-size: 16px;
             cursor: pointer;
             transition: all 0.3s;
@@ -191,14 +195,7 @@
     margin-left: 250px; /* Same as the width of your sidebar */
     padding: 1em;
 }
-.taguro {
-    margin-top: -40px;
-    margin-left: 500px;
-}
-.eugine {
-    margin-top: -40px;
-    margin-left: 500px;
-}
+
 .margin-bottom-corn {
         margin-bottom: 20px; /* Adjust the value as needed */
     }

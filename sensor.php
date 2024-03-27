@@ -54,6 +54,7 @@ $allSensorData = getLatestSensorData();
                 <th scope="col">Potassium</th>
                 <th scope="col">Air Temp</th>
                 <th scope="col">Soil Temp</th>
+                <th scope="col">Moisture</th>
             </tr>
         </thead>
         <tbody>
@@ -64,7 +65,8 @@ $allSensorData = getLatestSensorData();
                     <td><?php echo $data ? htmlspecialchars($data['phosphorus']) : 'N/A'; ?></td>
                     <td><?php echo $data ? htmlspecialchars($data['potassium']) : 'N/A'; ?></td>
                     <td><?php echo $data ? htmlspecialchars($data['air_temp']) : 'N/A'; ?></td>
-                    <td><?php echo $data ? htmlspecialchars($data['soil_temperature']) : 'N/A'; ?></td>
+                    <td><?php echo $data ? htmlspecialchars($data['soil_temp']) : 'N/A'; ?></td>
+                    <td><?php echo $data ? htmlspecialchars($data['soil_moisture']) : 'N/A'; ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
