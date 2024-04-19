@@ -1,6 +1,5 @@
     <?php
     include 'config.php';
-    // Fetch threshold values from the database for Rice and Corn crops
     function fetchThresholdsFromDatabase($link) {
         $thresholds = array();
 
@@ -13,7 +12,7 @@
                 $months = explode(',', $row['months']);
                 $thresholds[] = array(
                     "crop_name" => $row['crop_name'],
-                    "months" => $months,
+                    // "months" => $months,
                     "min_nitrogen" => $row['min_nitrogen'],
                     "max_nitrogen" => $row['max_nitrogen'],
                     "min_phosphorus" => $row['min_phosphorus'],
@@ -43,7 +42,6 @@
         return $thresholds;
     }
 
-    // Fetch threshold values from the database for Rice and Corn crops
     $thresholds = fetchThresholdsFromDatabase($link);
     // var_dump($thresholds);
     ?>
@@ -76,37 +74,29 @@
             <div class="col">
                 <div class="presto">
                     <h5>Legends</h5>
-                        <div class="row">
+                        <div class="row text-center">
                             <div class="col">
                                 <span>Maximum Yield Prediction</span>
                                 <div class="row d-flex justify-content-center">
-                                    <div class="box " style="background-color: Green; max-width:50px;height:50px"> &nbsp </div>
+                                    <div class="box " style="background-color: #65C56D; max-width:50px;height:50px"> &nbsp </div>
                                 </div>   
                             </div>
                             <div class="col">
                                 <span>Average Yield Prediction</span>
                                 <div class="row d-flex justify-content-center">
-                                    <div class="box " style="background-color: yellow; max-width:50px;height:50px;"> &nbsp</div>
+                                    <div class="box " style="background-color: #F9EF97; max-width:50px;height:50px;"> &nbsp</div>
                                 </div>
                             </div>
                             <div class="col">
                                 Minimum Yield Prediction
                                 <div class="row d-flex justify-content-center">
-                                    <div class="box " style="background-color: Red; max-width:50px;height:50px;"> &nbsp </div>
+                                    <div class="box " style="background-color: #cc5858; max-width:50px;height:50px;"> &nbsp </div>
                                 </div>
                             </div>
                         </div>
                 </div>
             </div>
         </div>
-
-
-
-
-
-
-
-
 
         <div class="carl" style="margin: auto;">
             <div class="row justify-content-center">
@@ -117,7 +107,7 @@
                                 <div class="header d-flex justify-content-between">
                                     <div class="month"></div>
 
-                                    <div id="icon" class="icon-recommend">
+                                    <div id="icon" class="icon-recommend text-center">
                                         <div class="col" >
                                         <h6>Recommended</h6>
                                         
@@ -137,34 +127,12 @@
                                     </div>
 
 
-                                    <div id="icon-input" class="icon-input">
+                                    <div id="icon-input" class="icon-input text-center">
                                         <div class="col">
                                         <h6>Input</h6>
 
-                                            <?php
-                                            $currentMonth = date('n');
-                                            $foundCrop = false;
+                                        <img id="crop-icon" src="" alt="" style="width: 50px; height: 40px;">
 
-                                            // Loop through each crop and its associated month IDs
-                                            foreach ($thresholds as $threshold) {
-                                                $cropName = $threshold['crop_name'];
-                                                $months = $threshold['months'];
-
-                                                // Check if the current month matches any of the month IDs for this crop
-                                                if (strpos($months, $currentMonth) !== false) {
-                                                    $imagePath = "./img/" . ($cropName) . ".png";
-                                                    echo '<img src="' . $imagePath . '" alt="' . $cropName . '" style="width: 50px; height: 40px;">';
-                                                    
-                                                    $foundCrop = true;
-                                                    break;
-                                                }
-                                            }
-
-                                            // Display a message if no crop is found for the current month
-                                            if (!$foundCrop) {
-                                                echo "No crop found for the current month ($currentMonth).";
-                                            }
-                                            ?>
                                             </div>
                                     </div>
 
@@ -203,7 +171,7 @@
                             <div class="header2 d-flex justify-content-between">
                                 <div class="month2"></div>
 
-                                    <div id="icon2" class="icon-recommend">
+                                    <div id="icon2" class="icon-recommend text-center">
                                         <div class="col" >
                                             <h6>Recommended</h6>
                                                 <?php
@@ -220,35 +188,13 @@
                                                 <img src="<?= $iconSrc ?>" alt="Crop Icon" style="width: 50px; height: 40px;">
                                         </div>
                                     </div>
-                                    <div id="icon-input-2" class="icon-input-2">
+                                    <div id="icon-input-2" class="icon-input-2 text-center ">
                                         <div class="col">
-                                        <h6>Input</h6>
+                                            <h6>Input</h6>
 
-                                            <?php
-                                            $currentMonth = date('n');
-                                            $foundCrop = false;
+                                            <img id="crop-icon-2" src="" alt="" style="width: 50px; height: 40px;">
 
-                                            // Loop through each crop and its associated month IDs
-                                            foreach ($thresholds as $threshold) {
-                                                $cropName = $threshold['crop_name'];
-                                                $months = $threshold['months'];
-
-                                                // Check if the current month matches any of the month IDs for this crop
-                                                if (strpos($months, $currentMonth) !== false) {
-                                                    $imagePath = "./img/" . ($cropName) . ".png";
-                                                    echo '<img src="' . $imagePath . '" alt="' . $cropName . '" style="width: 50px; height: 40px;">';
-                                                    
-                                                    $foundCrop = true;
-                                                    break;
-                                                }
-                                            }
-
-                                            // Display a message if no crop is found for the current month
-                                            if (!$foundCrop) {
-                                                echo "No crop found for the current month ($currentMonth).";
-                                            }
-                                            ?>
-                                            </div>
+                                        </div>
                                     </div>
                                 <div class="taguro">
                                     <div class="btns2">
@@ -286,16 +232,6 @@
 
                 </div> 
             </div>
-    <!-- Corn: November-March May-June -->
-    <!-- Rice: July-October -->
-    <!-- April offseason: no crop -->
-            <!-- <div class="row loader">
-                <div class="col">
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
-                    </div>
-                </div>
-            </div> -->
 
 
             <div class="row justify-content-center thresholds m-1 mt-4">
@@ -368,54 +304,38 @@
 
     <script>
         function updateProgress(progress) {
-            // Update the progress bar width based on the progress value
             $(".loader .progress-bar").css("width", progress + "%");
-            // Display the loading status below the loader
             $(".loader").append("<p>" + progress + "% completed...</p>");
         }
 
         $(document).ready(function () {
-            // Define a function to handle the click event of the button
             $("#runMLPredictionBtn").click(function () {
-                // Show the loader
                 $(".loader .progress").show();
-                // Use AJAX to send a request to run_machine_learning_script.php
                 $.ajax({
                     type: "GET",
                     url: "run_machine_learning_script.php",
                     success: function (response) {
-                        // Handle the success response if needed
                         console.log("Machine Learning Prediction executed successfully");
-                        // Hide the loader once the prediction is completed
                         $(".loader .progress").hide();
                     },
                     error: function (error) {
-                    // Handle the error response if needed
                         console.error("Error executing Machine Learning Prediction", error);
-                        // Hide the loader in case of error
                         $(".loader .progress").hide();
                     }
                 });
             });
 
-            // Define a function to handle the click event of the Hybrid button
             $("#runHybridPredictionBtn").click(function () {
-                // Show the loader
                 $(".loader .progress").show();
-                // Use AJAX to send a request to run_python_script.php
                 $.ajax({
                     type: "GET",
                     url: "run_python_script.php",
                     success: function (response) {
-                        // Handle the success response if needed
                         console.log("Hybrid Prediction executed successfully");
-                        // Hide the loader once the prediction is completed
                         $(".loader .progress").hide();
                     },
                     error: function (error) {
-                        // Handle the error response if needed
                         console.error("Error executing Hybrid Prediction", error);
-                        // Hide the loader in case of error
                         $(".loader .progress").hide();
                     }
                 });
@@ -423,28 +343,22 @@
         });
 
         $(document).ready(function () {
-        // Define the current month
         var currentMonth = <?= date('n') ?>;
 
-        // Function to update the month display and icons
         function updateMonth(month) {
-            // Update the month display
             $(".month").text(month);
-            // Update the crop icon inside the icon-recommend class
             updateCropIcon(month);
-            // Update the crop icon inside the icon-input class
             updateIconInput(month);
         }
 
-        // Function to update the crop icon based on the month
         function updateCropIcon(month) {
             var iconSrc = '';
-            if ((month >= 11 && month <= 12) || (month >= 1 && month <= 3)) {
-                iconSrc = './img/corn.png';
+            if (month == 4) {
+                iconSrc = 'No crop during offseason month.';
             } else if ((month >= 5 && month <= 10) || (month == 13)) {
                 iconSrc = './img/rice.png';
             } else {
-                iconSrc = './img/offseason.jpg';
+                iconSrc = './img/corn.png';
             }
             $('#icon img').attr('src', iconSrc);
         }
@@ -452,70 +366,59 @@
         var currentMonth = month;
         var foundCrop = false;
         var thresholds = <?php echo json_encode($thresholds); ?>;
+        console.log('Current Month:', currentMonth); // Debugging output
 
-        // Loop through each crop and its associated month IDs
+
         thresholds.forEach(function(threshold) {
             var cropName = threshold.crop_name;
-            var months = threshold.months;
+            var months = threshold.months.split(',').map(Number);
+            // console.log('Array fetched from the database in the months column:', months); // Debugging output
 
-            // Check if the current month matches any of the month IDs for this crop
+
             if (months.includes(currentMonth)) {
                 var imageSrc = "./img/" + cropName.toLowerCase() + ".png";
                 $('#icon-input img').attr('src', imageSrc);
                 foundCrop = true;
-                return; // Exit the loop
+                return;
             }
         });
 
-        // Display a message if no crop is found for the current month
         if (!foundCrop) {
             console.log("No crop found for the current month (" + currentMonth + ").");
+            // $('#icon-input img').attr('src', ''); // Clear the image source if no crop is found
+
         }
     }
-        // Initialize the month display
         updateMonth(currentMonth);
 
-        // Define a function to handle the click event of the previous button
         $(".prev-btn").click(function () {
-            // Update the current month
             currentMonth--;
-            // If the current month is less than 1, set it to 12 (December)
             if (currentMonth < 1) {
                 currentMonth = 12;
             }
-            // Update the month display
             updateMonth(currentMonth);
         });
 
-        // Define a function to handle the click event of the next button
         $(".next-btn").click(function () {
-            // Update the current month
             currentMonth++;
-            // If the current month is greater than 12, set it to 1 (January)
             if (currentMonth > 12) {
                 currentMonth = 1;
             }
-            // Update the month display
             updateMonth(currentMonth);
         });
         
         });
 
         $(document).ready(function () {
-            // Define the current month
             var currentMonth = <?= date('n') ?>;
 
-            // Function to update the month display
             function updateMonth(month) {
-                // Update the month display
                 $(".month2").text(month);
-                // Update the crop icon based on the month
                 updateCropIcon(month);
                 updateIconInput(month);
 
             }
 
-            // Function to update the crop icon based on the month
             function updateCropIcon(month) {
                 var iconSrc = '';
                 if ((month >= 11 && month <= 12) || (month >= 1 && month <= 3)) {
@@ -532,48 +435,36 @@
                 var foundCrop = false;
                 var thresholds = <?php echo json_encode($thresholds); ?>;
 
-                // Loop through each crop and its associated month IDs
                 thresholds.forEach(function(threshold) {
                     var cropName = threshold.crop_name;
-                    var months = threshold.months;
+                    var months = threshold.months.split(',').map(Number);
 
-                    // Check if the current month matches any of the month IDs for this crop
                     if (months.includes(currentMonth)) {
                         var imageSrc = "./img/" + cropName.toLowerCase() + ".png";
                         $('#icon-input-2 img').attr('src', imageSrc);
                         foundCrop = true;
-                        return; // Exit the loop
+                        return;
                     }
                 });
-                // Display a message if no crop is found for the current month
                 if (!foundCrop) {
                     console.log("No crop found for the current month (" + currentMonth + ").");
                 }
             }
-            // Initialize the month display
             updateMonth(currentMonth);
 
-            // Define a function to handle the click event of the previous button
             $(".prev-btn2").click(function () {
-                // Update the current month
                 currentMonth--;
-                // If the current month is less than 1, set it to 12 (December)
                 if (currentMonth < 1) {
                     currentMonth = 12;
                 }
-                // Update the month display
                 updateMonth(currentMonth);
             });
 
-            // Define a function to handle the click event of the next button
             $(".next-btn2").click(function () {
-                // Update the current month
                 currentMonth++;
-                // If the current month is greater than 12, set it to 1 (January)
                 if (currentMonth > 12) {
                     currentMonth = 1;
                 }
-                // Update the month display
                 updateMonth(currentMonth);
             });
             
@@ -582,11 +473,13 @@
     
 
     </script>
-    
+    <script>
+    var thresholds = <?php echo json_encode($thresholds); ?>;
+    </script>
 
-
-    <script src="./js/troubleshoot/script.js"></script>
-    <script src="./js/troubleshoot/script2.js"></script>
+    <!-- <script src="./js/calendar.js"></script> -->
+    <script src="./js/script1.js"></script> <!-- script for days of calendar 1 -->
+    <script src="./js/script2.js"></script> <!-- script for days of calendar 2 -->
     <!-- Include jQuery -->
 
     <!-- Include Bootstrap JS (Make sure this comes after jQuery) -->
@@ -596,12 +489,3 @@
     </body>
 
     </html>
-
-    <style>
-        .box{
-            
-            background-color: #fefbd8;
-
-        }
-    </style>
-

@@ -97,10 +97,10 @@ function renderCalendar() {
             bgColor = '#65C56D';
             break;
           case 'Red':
-            bgColor = 'red';
+            bgColor = '#cc5858';
             break;
           case 'Yellow':
-            bgColor = 'yellow';
+            bgColor = '#F9EF97';
             break;
           default:
             bgColor = 'white'; // Default color if status is not recognized
@@ -179,7 +179,7 @@ todayBtn.addEventListener("click", () => {
   renderCalendar();
 });
 
-renderCalendar();
+// renderCalendar();
 
 function hideTodayBtn() {
   if (

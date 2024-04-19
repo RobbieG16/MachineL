@@ -36,7 +36,7 @@ padding: 1em;
     border-radius: 8px;
 }
 .trends{
-    height: 450px;
+    height: 520px;
 }
 .title{
     padding-top: 5px;
@@ -50,7 +50,7 @@ min-width: 320px;
 max-width: 660px;
 margin: 1em auto;
 }
-h6{
+.bed-title{
 color: red;
 }
 .values, .valuee{
@@ -82,3 +82,17 @@ color: red;
         max-width: 500px;
     }
 }
+    /* Additional styles for buttons */
+    .pick-nutrient .btn-check:checked + .btn{
+        background-color: #111 !important; /* Use !important to override Bootstrap styles */
+        border-color: forestgreen !important; /* Use !important to override Bootstrap styles */
+        color: #0fc041 !important; /* Use !important to override Bootstrap styles */
+    }
+    .btn-outline-primary:hover{
+        background-color: gold;
+    }
+    .btn-group label {
+        border-color: forestgreen; /* Set border color for all buttons */
+        color: forestgreen; /* Set text color for all buttons */
+        background-color: white;
+    }

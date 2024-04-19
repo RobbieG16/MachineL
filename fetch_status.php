@@ -32,10 +32,8 @@ if ($query->execute()) {
             // Determine if the day is clickable based on the status
             $clickable = ($status == 'Green') ? true : false;
     
-            // Add day data to the statusData array only if it doesn't exist or if it's a 'Green' status (to prioritize 'Green' over 'Red')
-            if (!isset($statusData[$day]) || $status == 'Green') {
                 $statusData[$day] = array('month' => $month, 'year' => $year, 'status' => $status, 'clickable' => $clickable);
-            }
+            
         }
     }
 

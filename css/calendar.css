@@ -195,6 +195,11 @@
     margin-left: 250px; /* Same as the width of your sidebar */
     padding: 1em;
 }
+.box{
+            
+    background-color: #fefbd8;
+
+}
 
 .margin-bottom-corn {
         margin-bottom: 20px; /* Adjust the value as needed */

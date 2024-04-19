@@ -80,13 +80,13 @@ function renderCalendar2() {
         let bgColor2 = '';
         switch (dayStatusData2.status) {
           case 'Green':
-            bgColor2 = 'green';
+            bgColor2 = '#65C56D';
             break;
           case 'Red':
-            bgColor2 = 'red';
+            bgColor2 = '#cc5858';
             break;
           case 'Yellow':
-            bgColor2 = 'yellow';
+            bgColor2 = '#F9EF97';
             break;
           default:
             bgColor2 = 'white'; // Default color if status is not recognized
@@ -168,7 +168,7 @@ todayBtn2.addEventListener("click", () => {
   renderCalendar2();
 });
 
-renderCalendar2();
+// renderCalendar2();
 
 function hideTodayBtn2() {
   if (

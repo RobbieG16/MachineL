@@ -2,10 +2,6 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Output buffering is necessary for flushing the output progressively
-ob_implicit_flush(true);
-ob_end_flush();
-
 echo "Executing PHP script...<br>";
 
 // Specify the full path to the Python executable
@@ -14,30 +10,9 @@ $pythonCommand = 'C:\Users\ASUS\AppData\Local\Programs\Python\Python311\python.e
 // Specify the full path to the machine learning Python script
 $pythonScriptPath = "./predecting.py";
 
-// Open a pipe to the Python process to capture its output in real-time
-$descriptorspec = array(
-   0 => array("pipe", "r"),
-   1 => array("pipe", "w"),
-   2 => array("pipe", "w")
-);
-
-$process = proc_open("$pythonCommand $pythonScriptPath", $descriptorspec, $pipes);
-
-if (is_resource($process)) {
-    // Read from the pipe until it's closed by the process
-    while ($s = fgets($pipes[1])) {
-        // Send progress information back to the client
-        echo "<script>updateProgress('$s');</script>";
-        flush(); // Flush the output buffer to send the content to the client immediately
-    }
-    fclose($pipes[1]);
-    fclose($pipes[2]);
-
-    // Close the process
-    proc_close($process);
-}
+// Execute Python script and capture its output
 $pythonOutput = shell_exec("$pythonCommand $pythonScriptPath 2>&1");
 
 // Display Python script output
 echo "<pre>$pythonOutput</pre>";
-?>
+

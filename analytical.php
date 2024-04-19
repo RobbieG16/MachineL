@@ -1,6 +1,6 @@
 <?php
 // Function to generate nutrient-specs structure
-function generateNutrientSpecs($nutrient, $sensorData) {
+function generateNutrientSpecs($nutrient, $sensorData, $averages) {
     ?>
     <!-- <?php echo strtoupper($nutrient); ?> -->
     <div class="row sensor-specs" id="<?php echo $nutrient; ?>-specs">
@@ -11,7 +11,7 @@ function generateNutrientSpecs($nutrient, $sensorData) {
             <div class="row sensor">
                 <?php foreach ($sensorData as $sensorId => $sensorDataArray): ?>
                     <div class="col">
-                        <h6>Bed <?php echo $sensorId; ?></h6>
+                        <h6 class="bed-title">Bed <?php echo $sensorId; ?></h6>
                         <table class="table">
                             <thead>
                                 <tr>
@@ -38,19 +38,36 @@ function generateNutrientSpecs($nutrient, $sensorData) {
                     <h4>Trends</h4>
                 </div>
                     <div id="<?php echo $nutrient; ?>Chart" style="height: 400px;" class="chart-container"></div>
+                    <div class="col text-center mt-2">
+                        <div class="row"><h5>Last Week Average</h5></div>
+                        <h5 class="row"><span id="lastWeekAverage-<?php echo strtolower($nutrient); ?>"><?php echo number_format($averages[$nutrient]['lastWeek'], 2); ?></span></h5>
+                    </div>
+                    <div class="col text-center mt-2">
+                        <div class="row"><h5>Last Month Average</h5></div>
+                        <h5 class="row"><span id="lastMonthAverage-<?php echo strtolower($nutrient); ?>"><?php echo number_format($averages[$nutrient]['lastMonth'], 2); ?></span></h5>
+                    </div>
+                    <!-- <h5 class="text-center mt-3">Last Week Average: <span id="lastWeekAverage-<?php echo strtolower($nutrient); ?>"><?php echo number_format($averages[$nutrient]['lastWeek'], 2); ?></span> || Last Month Average: <span id="lastMonthAverage-<?php echo strtolower($nutrient); ?>"><?php echo number_format($averages[$nutrient]['lastMonth'], 2); ?></span></h5> -->
+
                 </div>
-            <div class="row insights">
+            <!-- <div class="row insights">
                 <h4>Insights</h4>
                 <div class="row">
-                    <!-- Add insights content if needed -->
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
+
+
+    
     <?php
+
+    
 }
 
 require_once 'config.php';
+$reading_times1 = array();
+$reading_times2 = array();
+$reading_times3 = array();
 
 $air_temp = array();
 $soil_temp = array();
@@ -59,11 +76,22 @@ $phosphorus = array();
 $potassium = array();
 $soil_moisture = array();
 
-$query = "SELECT air_temp, soil_temp, soil_moisture, nitrogen, phosphorus, potassium FROM rawsensor1";
+$query = "SELECT reading_time, air_temp, soil_temp, soil_moisture, nitrogen, phosphorus, potassium FROM rawsensor1 ORDER BY reading_time";
 $result = $link->query($query);
+
+$query2 = "SELECT reading_time, air_temp, soil_temp, soil_moisture, nitrogen, phosphorus, potassium FROM rawsensor2 ORDER BY reading_time";
+$result2 = $link->query($query2);
+
+$query3 = "SELECT reading_time, air_temp, soil_temp, soil_moisture, nitrogen, phosphorus, potassium FROM rawsensor3 ORDER BY reading_time";
+$result3 = $link->query($query3);
+
 
 if ($result) {
     while ($row = $result->fetch_assoc()) {
+        // echo "Data from result:\n";
+        // var_dump($row);
+        //pang debug lang yan talaga mga par hehe
+        $reading_times1[] = $row['reading_time'];
         $air_temp[] = $row['air_temp'];
         $soil_temp[] = $row['soil_temp'];
         $nitrogen[] = $row['nitrogen'];
@@ -73,6 +101,32 @@ if ($result) {
     }
     $result->free();
 }
+// Fetch data from the second table
+if ($result2) {
+    while ($row = $result2->fetch_assoc()) {
+        $reading_times2[] = $row['reading_time'];
+        $air_temp2[] = $row['air_temp'];
+        $soil_temp2[] = $row['soil_temp'];
+        $nitrogen2[] = $row['nitrogen'];
+        $phosphorus2[] = $row['phosphorus'];
+        $potassium2[] = $row['potassium'];
+        $soil_moisture2[] = $row['soil_moisture'];
+    }
+    $result2->free();
+}
+if ($result3) {
+    while ($row = $result3->fetch_assoc()) {
+        $reading_times3[] = $row['reading_time'];
+        $air_temp3[] = $row['air_temp'];
+        $soil_temp3[] = $row['soil_temp'];
+        $nitrogen3[] = $row['nitrogen'];
+        $phosphorus3[] = $row['phosphorus'];
+        $potassium3[] = $row['potassium'];
+        $soil_moisture3[] = $row['soil_moisture'];
+    }
+    $result3->free();
+}
+
 
 function getLatestSensorData() {
     global $link;
@@ -80,7 +134,7 @@ function getLatestSensorData() {
 
     for ($sensorId = 1; $sensorId <= 3; $sensorId++) {
         $tableName = "rawsensor{$sensorId}";
-        $sql = "SELECT * FROM `$tableName` ORDER BY `reading_time` DESC LIMIT 8";
+        $sql = "SELECT * FROM $tableName ORDER BY reading_time DESC LIMIT 9";
         $result = mysqli_query($link, $sql);
 
         $sensorData = [];
@@ -99,6 +153,46 @@ function getLatestSensorData() {
 
 // Get the data for all sensors
 $SensorData = getLatestSensorData();
+function getAverage($table, $column, $startDate, $endDate) {
+    global $link;
+    $sql = "SELECT AVG($column) AS average FROM $table WHERE reading_time BETWEEN '$startDate' AND '$endDate'";
+    $result = mysqli_query($link, $sql);
+
+    if ($result && mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        return $row['average'];
+    } else {
+        return 0;
+    }
+}
+
+$columns = ['air_temp', 'soil_temp', 'soil_moisture', 'nitrogen', 'phosphorus', 'potassium'];
+
+$lastWeekStartDate = date('Y-m-d', strtotime('-1 week'));
+$lastWeekEndDate = date('Y-m-d');
+
+$lastMonthStartDate = date('Y-m-d', strtotime('-1 month'));
+$lastMonthEndDate = date('Y-m-d');
+
+$averages = array();
+
+foreach ($columns as $column) {
+    $table_averages = array();
+    for ($sensor = 1; $sensor <= 3; $sensor++) {
+        $sensorName = 'rawsensor' . $sensor;
+        $averageLastWeek = getAverage($sensorName, $column, $lastWeekStartDate, $lastWeekEndDate);
+        $averageLastMonth = getAverage($sensorName, $column, $lastMonthStartDate, $lastMonthEndDate);
+
+        $table_averages[$sensorName] = array('lastWeek' => $averageLastWeek, 'lastMonth' => $averageLastMonth);
+    }
+
+    $lastWeekAverages = array_column($table_averages, 'lastWeek');
+    $lastMonthAverages = array_column($table_averages, 'lastMonth');
+    $averageLastWeek = array_sum($lastWeekAverages) / count($lastWeekAverages);
+    $averageLastMonth = array_sum($lastMonthAverages) / count($lastMonthAverages);
+
+    $averages[$column] = array('lastWeek' => $averageLastWeek, 'lastMonth' => $averageLastMonth);
+}
 $link->close();
 ?>
 <!DOCTYPE html>
@@ -123,7 +217,7 @@ $link->close();
         <h2 class="mb-4">Analytics</h2>
         <div class="container-fluid">
             <div class="row pick-nutrient">
-                <div class="btn-group pick-nutrient" role="group" aria-label="Basic radio toggle button group">
+                <div class="btn-group pick-nutrient custom-btn-group" role="group" aria-label="Basic radio toggle button group">
                     <input type="radio" class="btn-check" name="btnradio" id="nitrogen" autocomplete="off" checked>
                     <label class="btn btn-outline-primary" for="nitrogen">Nitrogen</label>
 
@@ -151,7 +245,7 @@ $link->close();
             
             // Loop through nutrients and generate nutrient-specs structure
             foreach ($nutrients as $nutrient) {
-                generateNutrientSpecs($nutrient, $SensorData);
+                generateNutrientSpecs($nutrient, $SensorData, $averages);
             }
             ?>
 
@@ -164,34 +258,64 @@ $link->close();
                 var phosphorusData = <?php echo json_encode($phosphorus); ?>;
                 var potassiumData = <?php echo json_encode($potassium); ?>;
                 var soil_moistureData = <?php echo json_encode($soil_moisture); ?>;
+                var reading_times1 = <?php echo json_encode($reading_times1);?>;
+                var reading_times2 = <?php echo json_encode($reading_times2);?>;
+                var reading_times3 = <?php echo json_encode($reading_times3);?>;
+                console.log("Reading Times 1:");
+                console.log(reading_times1);
+                console.log("Reading Times 2:");    
+                console.log(reading_times2);
+                console.log("Reading Times 3:");
+                console.log(reading_times3);
 
-                // Function to extract date from timestamp
+
                 function extractDate(timestamp) {
-                    return new Date(timestamp * 1000).toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+                    var parts = timestamp.split(' ')[0].split('-');
+                    var year = parseInt(parts[0]);
+                    var month = parseInt(parts[1]) - 1; 
+                    var day = parseInt(parts[2]);
+                    
+                    var date = new Date(year, month, day);
+                    
+                    return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
                 }
-                // Loop through nutrients and generate Highcharts charts
+
                 <?php foreach ($nutrients as $nutrient) : ?>
+                    console.log('X-axis categories for <?php echo $nutrient;?> chart:');
+                    console.log(reading_times1.map(timestamp => extractDate(timestamp))); 
+
                     Highcharts.chart('<?php echo $nutrient; ?>Chart', {
-                        chart: {
-                            type: 'line'
-                        },
-                        title: {
-                            text: '<?php echo ucfirst($nutrient); ?> Over Time'
-                        },
-                        xAxis: {
-                            categories: air_tempData.map(extractDate), // Replace air_tempData with the appropriate data array
-                            crosshair: true
-                        },
-                        yAxis: {
-                            title: {
-                                text: '<?php echo ($nutrient === "air_temp" || $nutrient === "soil_temp" || $nutrient === "soil_moisture") ? "Temperature (°C)" : "Values"; ?>'
-                            }
-                        },
-                        series: [{
-                            name: '<?php echo ucfirst($nutrient); ?>',
-                            data: <?php echo "{$nutrient}Data"; ?>.map(Number) // Ensure data is in Number format
-                        }]
-                    });
+                chart: {
+                    type: 'line'
+                },
+                title: {
+                    text: '<?php echo ucfirst($nutrient); ?> Over Time'
+                },
+                xAxis: {
+                    categories: reading_times1.map(extractDate), 
+                    crosshair: true
+                },
+                yAxis: {
+                    title: {
+                        text: '<?php echo ($nutrient === "air_temp" || $nutrient === "soil_temp" || $nutrient === "soil_moisture") ? "Temperature (°C)" : "Values"; ?>'
+                    }
+                },
+                series: [
+                    {
+                        name: '(Bed 1)',
+                        data: <?php echo "{$nutrient}Data"; ?>.map(Number)
+                    },
+                    {
+                        name: '(Bed 2)',
+                        data: <?php echo json_encode(${$nutrient.'2'}); ?>.map(Number)
+                    },
+                    {
+                        name: '(Bed 3)',
+                        data: <?php echo json_encode(${$nutrient.'3'}); ?>.map(Number)
+                    }
+
+                ]
+            });
                 <?php endforeach; ?>
             </script>
 
@@ -200,7 +324,6 @@ $link->close();
                     var nutrientRadios = document.querySelectorAll('.pick-nutrient .btn-check');
                     var sensorSpecs = document.querySelectorAll('.sensor-specs');
 
-                    // Hide all sensor-specs sections initially
                     sensorSpecs.forEach(function (spec) {
                         spec.style.display = 'none';
                     });

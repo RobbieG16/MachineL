@@ -1,122 +1,81 @@
 <?php
 include 'config.php';
-print_r($_POST);
 
 // Check if form data is posted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  // Check if the necessary keys exist in the $_POST array
-  if (isset($_POST['cropName']) && isset($_POST['nitrogen']) && isset($_POST['phosphorus']) && isset($_POST['potassium']) &&
-      isset($_POST['air_temp']) && isset($_POST['soil_temp']) && isset($_POST['soil_moisture']) &&
-      isset($_POST['rel_hum']) &&
-      isset($_POST['sol_rad']) && isset($_POST['rainfall']) && isset($_POST['months'])) {
+    // Check if the necessary keys exist in the $_POST array
+    if (isset($_POST['cropName'])) {
+        // Retrieve form data
+        $cropName = $_POST['cropName'];
 
-      // Retrieve form data
-      $cropName = $_POST['cropName'];
-      $months = $_POST['months'];
+        // Prepare the SQL query
+        $sql = "INSERT INTO threshold (crop_name";
 
-      // Check if the selected months are already associated with another crop
-      $existingMonths = array();
-      $existingCrop = '';
-      $sqlCheck = "SELECT crop_name, months FROM threshold";
-      $resultCheck = mysqli_query($link, $sqlCheck);
-      if ($resultCheck) {
-          while ($row = mysqli_fetch_assoc($resultCheck)) {
-              $existingMonths[$row['crop_name']] = explode(',', $row['months']);
-          }
-          foreach ($existingMonths as $existingCropName => $existingCropMonths) {
-              if ($existingCropName != $cropName) {
-                  $duplicateMonths = array_intersect($months, $existingCropMonths);
-                  if (!empty($duplicateMonths)) {
-                      $existingCrop = $existingCropName;
-                      break;
-                  }
-              }
-          }
-      }
+        $params = []; // Array to store parameter names and values for insertion or update
 
-      // If there are duplicate months, display an alert message and stop further processing
-      if (!empty($existingCrop)) {
-          echo "<script>alert('The selected month(s) are already associated with the crop: $existingCrop. Please remove the duplicate month(s) if you wish to continue.');</script>";
-          exit; // Stop further processing
-      }
+        // Retrieve and parse the nutrient values if provided
+        $nutrients = [
+            'nitrogen' => 'N',
+            'phosphorus' => 'P',
+            'potassium' => 'K',
+            'air_temp' => 'AirTemperature',
+            'soil_temp' => 'SoilTemperature',
+            'soil_moisture' => 'SoilMoisture',
+        ];
 
-      // Retrieve and parse the nutrient values
-      $nutrients = [
-          'nitrogen' => explode('-', $_POST['nitrogen']),
-          'phosphorus' => explode('-', $_POST['phosphorus']),
-          'potassium' => explode('-', $_POST['potassium']),
-          'air_temp' => explode('-', $_POST['air_temp']),
-          'soil_temp' => explode('-', $_POST['soil_temp']),
-          'soil_moisture' => explode('-', $_POST['soil_moisture']),
-      ];
+        foreach ($nutrients as $key => $label) {
+            if (isset($_POST[$key]) && $_POST[$key] !== '') {
+                $sql .= ", min_$key, max_$key";
+                $params["min_$key"] = explode('-', $_POST[$key])[0];
+                $params["max_$key"] = explode('-', $_POST[$key])[1];
+            }
+        }
 
-      // Retrieve and parse the weather parameter values
-      $weatherParams = [
-          'rel_hum' => explode('-', $_POST['rel_hum']),
-          'sol_rad' => explode('-', $_POST['sol_rad']),
-          'rainfall' => explode('-', $_POST['rainfall']),
-      ];
+        // Retrieve and parse the weather parameter values if provided
+        $weatherParams = [
+            'rel_hum' => 'RelativeHumidity',
+            'sol_rad' => 'SolarRadiation',
+            'rainfall' => 'Rainfall',
+        ];
 
-      // Serialize the selected month IDs
-      $months = implode(',', $_POST['months']);
+        foreach ($weatherParams as $key => $label) {
+            if (isset($_POST[$key]) && $_POST[$key] !== '') {
+                $sql .= ", min_$key, max_$key";
+                $params["min_$key"] = explode('-', $_POST[$key])[0];
+                $params["max_$key"] = explode('-', $_POST[$key])[1];
+            }
+        }
 
-      // Prepare the SQL query
-      $sql = "INSERT INTO threshold (crop_name, months,
-                min_nitrogen, max_nitrogen,
-                min_phosphorus, max_phosphorus,
-                min_potassium, max_potassium,
-                min_air_temp, max_air_temp,
-                min_soil_temp, max_soil_temp,
-                min_soil_moisture, max_soil_moisture,
-                min_rel_hum, max_rel_hum,
-                min_sol_rad, max_sol_rad,
-                min_rainfall, max_rainfall)
-              VALUES ('$cropName', '$months',
-                      '{$nutrients['nitrogen'][0]}', '{$nutrients['nitrogen'][1]}',
-                      '{$nutrients['phosphorus'][0]}', '{$nutrients['phosphorus'][1]}',
-                      '{$nutrients['potassium'][0]}', '{$nutrients['potassium'][1]}',
-                      '{$nutrients['air_temp'][0]}', '{$nutrients['air_temp'][1]}',
-                      '{$nutrients['soil_temp'][0]}', '{$nutrients['soil_temp'][1]}',
-                      '{$nutrients['soil_moisture'][0]}', '{$nutrients['soil_moisture'][1]}',
-                      '{$weatherParams['rel_hum'][0]}', '{$weatherParams['rel_hum'][1]}',
-                      '{$weatherParams['sol_rad'][0]}', '{$weatherParams['sol_rad'][1]}',
-                      '{$weatherParams['rainfall'][0]}', '{$weatherParams['rainfall'][1]}')
-              ON DUPLICATE KEY UPDATE
-                      months = '$months',
-                      min_nitrogen = '{$nutrients['nitrogen'][0]}',
-                      max_nitrogen = '{$nutrients['nitrogen'][1]}',
-                      min_phosphorus = '{$nutrients['phosphorus'][0]}',
-                      max_phosphorus = '{$nutrients['phosphorus'][1]}',
-                      min_potassium = '{$nutrients['potassium'][0]}',
-                      max_potassium = '{$nutrients['potassium'][1]}',
-                      min_air_temp = '{$nutrients['air_temp'][0]}',
-                      max_air_temp = '{$nutrients['air_temp'][1]}',
-                      min_soil_temp = '{$nutrients['soil_temp'][0]}',
-                      max_soil_temp = '{$nutrients['soil_temp'][1]}',
-                      min_soil_moisture = '{$nutrients['soil_moisture'][0]}',
-                      max_soil_moisture = '{$nutrients['soil_moisture'][1]}',
-                      min_rel_hum = '{$weatherParams['rel_hum'][0]}',
-                      max_rel_hum = '{$weatherParams['rel_hum'][1]}',
-                      min_sol_rad = '{$weatherParams['sol_rad'][0]}',
-                      max_sol_rad = '{$weatherParams['sol_rad'][1]}',
-                      min_rainfall = '{$weatherParams['rainfall'][0]}',
-                      max_rainfall = '{$weatherParams['rainfall'][1]}'";
+        $sql .= ") VALUES ('$cropName'";
 
-      // Execute the query
-      if (mysqli_query($link, $sql)) {
-          echo "Data inserted successfully.";
-      } else {
-          echo "Error: " . mysqli_error($link);
-      }
-  } else {
-      // Handle the case where required form data is missing
-      echo "Error: Required form data is missing.";
-  }
+        foreach ($params as $param) {
+            $sql .= ", '$param'";
+        }
+
+        $sql .= ") ON DUPLICATE KEY UPDATE ";
+
+        foreach ($params as $param => $value) {
+            $sql .= "$param = CASE WHEN VALUES($param) IS NOT NULL THEN VALUES($param) ELSE $param END, ";
+        }
+
+        $sql = rtrim($sql, ", ");
+
+        // Execute the query
+        if (mysqli_query($link, $sql)) {
+            echo json_encode(array("success" => true, "message" => "Data inserted successfully."));
+        } else {
+            echo json_encode(array("success" => false, "message" => "Error: " . mysqli_error($link)));
+        }
+    } else {
+        // Handle the case where only crop name is required
+        echo json_encode(array("success" => false, "message" => "Error: Required form data is missing."));
+    }
 } else {
-  // Handle the case where the request method is not POST
-  // echo "Error: This page only accepts POST requests.";
+    // Handle the case where the request method is not POST
+    // echo json_encode(array("success" => false, "message" => "Error: This page only accepts POST requests."));
 }
 ?>
+
 
 
 
@@ -163,7 +122,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               <option value="28800000" <?php if (isset($currentInterval) && $currentInterval == 28800000) echo 'selected'; ?>>8 hours</option>
               <option value="43200000" <?php if (isset($currentInterval) && $currentInterval == 43200000) echo 'selected'; ?>>12 hours</option>
             </select>
-            <input type="submit" class="btn btn-primary mt-2 mb-4" value="Set Interval">
+            <input type="submit" class="btn btn-primary mt-2 mb-4  custom-btn" value="Set Interval">
           </form>
           
           <!-- Text field for adjustable times -->
@@ -268,7 +227,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   </div>
                 </div>
                 <div class="row confirm">
-                  <button type="submit" class="btn btn-primary mx-auto">Apply</button>
+                  <button type="submit" class="btn btn-primary mx-auto custom-btn">Apply</button>
                 </div>
             </div>
           </form>
@@ -330,85 +289,89 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     // Retrieve and parse the nutrient values
     const nutrients = {
-      nitrogen: document.getElementById('nitrogen').value.split('-'),
-      phosphorus: document.getElementById('phosphorus').value.split('-'),
-      potassium: document.getElementById('potassium').value.split('-'),
-      airTemp: document.getElementById('air_temp').value.split('-'),
-      soilTemp: document.getElementById('soil_temp').value.split('-'),
-      soilMoisture: document.getElementById('soil_moisture').value.split('-')
+        nitrogen: document.getElementById('nitrogen').value.split('-'),
+        phosphorus: document.getElementById('phosphorus').value.split('-'),
+        potassium: document.getElementById('potassium').value.split('-'),
+        airTemp: document.getElementById('air_temp').value.split('-'),
+        soilTemp: document.getElementById('soil_temp').value.split('-'),
+        soilMoisture: document.getElementById('soil_moisture').value.split('-')
     };
 
     // Retrieve and parse the weather parameter values
     const weatherParams = {
-      relHumidity: document.getElementById('rel_hum').value.split('-'),
-      maxTemp: document.getElementById('max_temp').value.split('-'),
-      minTemp: document.getElementById('min_temp').value.split('-'),
-      solarRadiation: document.getElementById('sol_rad').value.split('-'),
-      rainfall: document.getElementById('rainfall').value.split('-')
+        relHumidity: document.getElementById('relHum').value.split('-'),
+        maxTemp: document.getElementById('max_temp').value.split('-'),
+        minTemp: document.getElementById('min_temp').value.split('-'),
+        solarRadiation: document.getElementById('sol_rad').value.split('-'),
+        rainfall: document.getElementById('rainfall').value.split('-')
     };
 
     // Prepare the alert message
     const alertMessage = `
-      Database updated.
-      Crop name: ${cropName}
-      Nitrogen: ${nutrients.nitrogen[0]} (min) - ${nutrients.nitrogen[1]} (max)
-      Phosphorus: ${nutrients.phosphorus[0]} (min) - ${nutrients.phosphorus[1]} (max)
-      Potassium: ${nutrients.potassium[0]} (min) - ${nutrients.potassium[1]} (max)
-      Air Temperature: ${nutrients.airTemp[0]} (min) - ${nutrients.airTemp[1]} (max)
-      Soil Temperature: ${nutrients.soilTemp[0]} (min) - ${nutrients.soilTemp[1]} (max)
-      Soil Moisture: ${nutrients.soilMoisture[0]} (min) - ${nutrients.soilMoisture[1]} (max)
-      Relative Humidity: ${weatherParams.relHumidity[0]} (min) - ${weatherParams.relHumidity[1]} (max)
-      Maximum Temperature: ${weatherParams.maxTemp[0]} (min) - ${weatherParams.maxTemp[1]} (max)
-      Minimum Temperature: ${weatherParams.minTemp[0]} (min) - ${weatherParams.minTemp[1]} (max)
-      Solar Radiation: ${weatherParams.solarRadiation[0]} (min) - ${weatherParams.solarRadiation[1]} (max)
-      Rainfall: ${weatherParams.rainfall[0]} (min) - ${weatherParams.rainfall[1]} (max)
+        Database updated.
+        Crop name: ${cropName}
+        Nitrogen: ${nutrients.nitrogen[0]} (min) - ${nutrients.nitrogen[1]} (max)
+        Phosphorus: ${nutrients.phosphorus[0]} (min) - ${nutrients.phosphorus[1]} (max)
+        Potassium: ${nutrients.potassium[0]} (min) - ${nutrients.potassium[1]} (max)
+        Air Temperature: ${nutrients.airTemp[0]} (min) - ${nutrients.airTemp[1]} (max)
+        Soil Temperature: ${nutrients.soilTemp[0]} (min) - ${nutrients.soilTemp[1]} (max)
+        Soil Moisture: ${nutrients.soilMoisture[0]} (min) - ${nutrients.soilMoisture[1]} (max)
+        Relative Humidity: ${weatherParams.relHumidity[0]} (min) - ${weatherParams.relHumidity[1]} (max)
+        Maximum Temperature: ${weatherParams.maxTemp[0]} (min) - ${weatherParams.maxTemp[1]} (max)
+        Minimum Temperature: ${weatherParams.minTemp[0]} (min) - ${weatherParams.minTemp[1]} (max)
+        Solar Radiation: ${weatherParams.solarRadiation[0]} (min) - ${weatherParams.solarRadiation[1]} (max)
+        Rainfall: ${weatherParams.rainfall[0]} (min) - ${weatherParams.rainfall[1]} (max)
     `;
 
     // Display the alert message
     alert(alertMessage);
 
-    // Send the form data to the server
+    // Construct the data to be sent in the format expected by PHP
+    let data = `cropName=${cropName}`;
+    for (const [key, value] of Object.entries(nutrients)) {
+        if (value[0] && value[1]) {
+            data += `&min_${key}=${value[0]}&max_${key}=${value[1]}`;
+        }
+    }
+    for (const [key, value] of Object.entries(weatherParams)) {
+        if (value[0] && value[1]) {
+            data += `&min_${key}=${value[0]}&max_${key}=${value[1]}`;
+        }
+    }
+
+    // Send the form data to the server using XMLHttpRequest
     const xhr = new XMLHttpRequest();
     xhr.open('POST', 'deploy.php', true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onload = function() {
-      if (xhr.status === 200) {
-        // Parse the JSON response from the server
-        const response = JSON.parse(xhr.responseText);
-
-        // Check if the update was successful
-        if (response.success) {
-          alert("Update successful: " + response.message);
+        if (xhr.status === 200) {
+            // Parse the JSON response from the server
+            const response = JSON.parse(xhr.responseText);
+            // Check if the update was successful
+            if (response.success) {
+                alert("Update successful: " + response.message);
+            } else {
+                alert("Update failed: " + response.message);
+            }
         } else {
-          alert("Update failed: " + response.message);
+            alert('Error: ' + xhr.statusText);
         }
-      } else {
-        alert('Error: ' + xhr.statusText);
-      }
     };
-    
-    // Construct the data to be sent in the format expected by PHP
-    const data = `cropName=${cropName}&` +
-      `min_nitrogen=${nutrients.nitrogen[0]}&max_nitrogen=${nutrients.nitrogen[1]}&` +
-      `min_phosphorus=${nutrients.phosphorus[0]}&max_phosphorus=${nutrients.phosphorus[1]}&` +
-      `min_potassium=${nutrients.potassium[0]}&max_potassium=${nutrients.potassium[1]}&` +
-      `min_air_temp=${nutrients.airTemp[0]}&max_air_temp=${nutrients.airTemp[1]}&` +
-      `min_soil_temp=${nutrients.soilTemp[0]}&max_soil_temp=${nutrients.soilTemp[1]}&` +
-      `min_soil_moisture=${nutrients.soilMoisture[0]}&max_soil_moisture=${nutrients.soilMoisture[1]}&` +
-      `min_rel_hum=${weatherParams.relHumidity[0]}&max_rel_hum=${weatherParams.relHumidity[1]}&` +
-      `min_max_temp=${weatherParams.maxTemp[0]}&max_max_temp=${weatherParams.maxTemp[1]}&` +
-      `min_min_temp=${weatherParams.minTemp[0]}&max_min_temp=${weatherParams.minTemp[1]}&` +
-      `min_sol_rad=${weatherParams.solarRadiation[0]}&max_sol_rad=${weatherParams.solarRadiation[1]}&` +
-      `min_rainfall=${weatherParams.rainfall[0]}&max_rainfall=${weatherParams.rainfall[1]}`;
-      xhr.send(data);
+    xhr.send(data);
 
-  // Assuming applyCropParameters should return true/false based on the success of the operation
-  return true; // Return true to allow form submission, or return false to prevent it
-  }
+    // Assuming applyCropParameters should return true/false based on the success of the operation
+    return true; // Return true to allow form submission, or return false to prevent it
+}
+
 </script>
 
 
 </body>
 
 </html>
-
+<style>
+.custom-btn {
+    background-color: forestgreen;
+    border-color: forestgreen;
+}
+</style>
