@@ -1,0 +1,208 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>MMSU Crop Decision Support app powered by CPE</title>
+	<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"> -->
+	<!-- <link rel="stylesheet" href="./css/global.css" /> -->
+	<link rel="stylesheet" href="./css/base.css">
+	<link rel="stylesheet" href="./css/dashboard.css">
+	<link rel="stylesheet" href="./css/calendar.css">
+	<link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
+	<script src="https://unpkg.com/htmx.org@1.9.8"
+		integrity="sha384-rgjA7mptc2ETQqXoYC3/zJvkU7K/aP44Y+z7xQuJiVnB/422P/Ak+F/AqFR7E4Wr"
+		crossorigin="anonymous"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+	<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+	<script src="{% static 'js/fullcalendar/index.global.min.js' %}"></script>
+</head>
+
+<body>
+
+	
+	<div class="sidebar">
+		<img src="Frame.svg" alt="" />
+		<div class="sidebar-options" x-data="{ activeTab: 'dashboard' }">
+			<ul>
+				<li class="sidebar-options-link">
+					<a @click.prevent="activeTab = 'dashboard'" hx-target="#main-content" hx-get="dashboard2.php"
+						hx-trigger="click">
+						<div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"
+								viewBox="0 0 28 28" fill="none">
+								<path :class="{ 'active': activeTab === 'dashboard' }"
+									d="M5.6 11.8H8C10.4 11.8 11.6 10.6 11.6 8.19999V5.8C11.6 3.4 10.4 2.2 8 2.2H5.6C3.2 2.2 2 3.4 2 5.8V8.19999C2 10.6 3.2 11.8 5.6 11.8Z"
+									stroke="#369B4B" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round"
+									stroke-linejoin="round" />
+								<path :class="{ 'active': activeTab === 'dashboard' }"
+									d="M20 11.8H22.4C24.8 11.8 26 10.6 26 8.19999V5.8C26 3.4 24.8 2.2 22.4 2.2H20C17.6 2.2 16.4 3.4 16.4 5.8V8.19999C16.4 10.6 17.6 11.8 20 11.8Z"
+									stroke="#369B4B" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round"
+									stroke-linejoin="round" />
+								<path :class="{ 'active': activeTab === 'dashboard' }"
+									d="M20 26.2H22.4C24.8 26.2 26 25 26 22.6V20.2C26 17.8 24.8 16.6 22.4 16.6H20C17.6 16.6 16.4 17.8 16.4 20.2V22.6C16.4 25 17.6 26.2 20 26.2Z"
+									stroke="#369B4B" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round"
+									stroke-linejoin="round" />
+								<path :class="{ 'active': activeTab === 'dashboard' }"
+									d="M5.6 26.2H8C10.4 26.2 11.6 25 11.6 22.6V20.2C11.6 17.8 10.4 16.6 8 16.6H5.6C3.2 16.6 2 17.8 2 20.2V22.6C2 25 3.2 26.2 5.6 26.2Z"
+									stroke="#369B4B" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round"
+									stroke-linejoin="round" />
+							</svg></div>
+						<span class="hide-title" :class="{ 'active': activeTab === 'dashboard' }">Dashboard</span>
+					</a>
+				</li>
+				<li class="sidebar-options-link">
+					<a @click.prevent="activeTab = 'calendar'" hx-target="#main-content" hx-get="calendar.php"
+						hx-trigger="click">
+						<div class="icon"><svg width="32" height="33" viewBox="0 0 32 33" fill="none"
+								xmlns="http://www.w3.org/2000/svg">
+								<path :class="{ 'active': activeTab === 'calendar' }"
+									d="M20.6667 4.93338V1.82227M20.6667 4.93338V8.04449M20.6667 4.93338H13.6667M2 14.2667V28.2667C2 29.985 3.39289 31.3778 5.11111 31.3778H26.8889C28.6072 31.3778 30 29.985 30 28.2667V14.2667M2 14.2667H30M2 14.2667V8.04449C2 6.32627 3.39289 4.93338 5.11111 4.93338H8.22222M30 14.2667L30.0001 8.04449C30.0001 6.32627 28.6073 4.93338 26.889 4.93338H26.1112M8.22216 1.82227V8.04449"
+									stroke="#369B4B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+							</svg>
+						</div>
+						<span class="hide-title" :class="{ 'active': activeTab === 'calendar' }">Calendar</span>
+					</a>
+				</li>
+				<li class="sidebar-options-link">
+					<a @click.prevent="activeTab = 'analytics'" hx-target="#main-content" hx-get="analytics.php"
+						hx-trigger="click">
+						<div class="icon"><svg width="29" height="32" viewBox="0 0 29 32" fill="none"
+								xmlns="http://www.w3.org/2000/svg">
+								<path :class="{ 'active': activeTab === 'analytics' }"
+									d="M2 29.8889H27M5.61108 10.9721H3.38889C2.625 10.9721 2 11.5971 2 12.3609V24.3332C2 25.0971 2.625 25.7221 3.38889 25.7221H5.61108C6.37497 25.7221 6.99997 25.0971 6.99997 24.3332V12.3609C6.99997 11.5971 6.37497 10.9721 5.61108 10.9721ZM15.611 6.5415H13.3889C12.625 6.5415 12 7.1665 12 7.93039V24.3331C12 25.097 12.625 25.722 13.3889 25.722H15.611C16.3749 25.722 16.9999 25.097 16.9999 24.3331V7.93039C16.9999 7.1665 16.3749 6.5415 15.611 6.5415ZM25.611 2.11108H23.3888C22.6249 2.11108 21.9999 2.73608 21.9999 3.49997V24.3333C21.9999 25.0972 22.6249 25.7222 23.3888 25.7222H25.611C26.3749 25.7222 26.9999 25.0972 26.9999 24.3333V3.49997C26.9999 2.73608 26.3749 2.11108 25.611 2.11108Z"
+									stroke="#369B4B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+							</svg>
+						</div>
+						<span class="hide-title" :class="{ 'active': activeTab === 'analytics' }">Analytics</span>
+					</a>
+				</li>
+				<li class="sidebar-options-link">
+					<a @click.prevent="activeTab = 'sensors'" hx-target="#main-content" hx-get="{% url 'sensors' %}"
+						hx-trigger="click">
+						<div class="icon"><svg width="29" height="31" viewBox="0 0 29 31" fill="none"
+								xmlns="http://www.w3.org/2000/svg">
+								<path :class="{ 'active': activeTab === 'sensors' }"
+									d="M4.42073 28.9C4.42073 28.9 5.30572 21.877 11.5007 15.6344M25.8903 2.74674L26.9427 12.383C27.6049 18.4476 22.448 23.8475 15.5698 24.4314C8.82095 25.0044 2.70722 20.6547 2.05738 14.704C1.40755 8.75336 6.35177 3.46485 13.1006 2.89187L24.7315 1.9044C25.3152 1.85482 25.8342 2.23196 25.8903 2.74674Z"
+									stroke="#369B4B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+							</svg>
+						</div>
+						<span class="hide-title" :class="{ 'active': activeTab === 'sensors' }">Sensors</span>
+					</a>
+				</li>
+				<li class="sidebar-options-link">
+					<a @click.prevent="activeTab = 'info'" hx-target="#main-content" hx-get="{% url 'info' %}"
+						hx-trigger="click">
+						<div class="icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+								xmlns="http://www.w3.org/2000/svg">
+								<path :class="{ 'active': activeTab === 'info' }"
+									d="M16 15.1V22.1M16 9.51399L16.014 9.49844M16 29.8C23.7319 29.8 30 23.5319 30 15.8C30 8.068 23.7319 1.79999 16 1.79999C8.26801 1.79999 2 8.068 2 15.8C2 23.5319 8.26801 29.8 16 29.8Z"
+									stroke="#369B4B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+							</svg>
+						</div>
+						<span class="hide-title" :class="{ 'active': activeTab === 'info' }">Info</span>
+					</a>
+				</li>
+				<div class="highlight"
+					x-bind:style="'top: ' + ((activeTab === 'dashboard') ? '0%' : (activeTab === 'calendar') ? '21%' : (activeTab === 'analytics') ? '42%' : (activeTab === 'sensors') ? '63%' : '84%')">
+				</div>
+			</ul>
+
+		</div>
+	</div>
+	<div class="navbar-mobile" x-data="{ activeTab: 'dashboard' }">
+		<ul>
+			<li class="sidebar-options-link">
+				<a @click.prevent="activeTab = 'dashboard'" hx-target="#main-content" hx-get="{% url 'dashboard' %}"
+					hx-trigger="click">
+					<div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"
+							fill="none">
+							<path :class="{ 'active': activeTab === 'dashboard' }"
+								d="M5.6 11.8H8C10.4 11.8 11.6 10.6 11.6 8.19999V5.8C11.6 3.4 10.4 2.2 8 2.2H5.6C3.2 2.2 2 3.4 2 5.8V8.19999C2 10.6 3.2 11.8 5.6 11.8Z"
+								stroke="#377243" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round"
+								stroke-linejoin="round" />
+							<path :class="{ 'active': activeTab === 'dashboard' }"
+								d="M20 11.8H22.4C24.8 11.8 26 10.6 26 8.19999V5.8C26 3.4 24.8 2.2 22.4 2.2H20C17.6 2.2 16.4 3.4 16.4 5.8V8.19999C16.4 10.6 17.6 11.8 20 11.8Z"
+								stroke="#377243" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round"
+								stroke-linejoin="round" />
+							<path :class="{ 'active': activeTab === 'dashboard' }"
+								d="M20 26.2H22.4C24.8 26.2 26 25 26 22.6V20.2C26 17.8 24.8 16.6 22.4 16.6H20C17.6 16.6 16.4 17.8 16.4 20.2V22.6C16.4 25 17.6 26.2 20 26.2Z"
+								stroke="#377243" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round"
+								stroke-linejoin="round" />
+							<path :class="{ 'active': activeTab === 'dashboard' }"
+								d="M5.6 26.2H8C10.4 26.2 11.6 25 11.6 22.6V20.2C11.6 17.8 10.4 16.6 8 16.6H5.6C3.2 16.6 2 17.8 2 20.2V22.6C2 25 3.2 26.2 5.6 26.2Z"
+								stroke="#377243" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round"
+								stroke-linejoin="round" />
+						</svg></div>
+				</a>
+			</li>
+			<li class="sidebar-options-link">
+				<a @click.prevent="activeTab = 'calendar'" hx-target="#main-content" hx-get="{% url 'calendar' %}"
+					hx-trigger="click">
+					<div class="icon"><svg width="32" height="33" viewBox="0 0 32 33" fill="none"
+							xmlns="http://www.w3.org/2000/svg">
+							<path :class="{ 'active': activeTab === 'calendar' }"
+								d="M20.6667 4.93338V1.82227M20.6667 4.93338V8.04449M20.6667 4.93338H13.6667M2 14.2667V28.2667C2 29.985 3.39289 31.3778 5.11111 31.3778H26.8889C28.6072 31.3778 30 29.985 30 28.2667V14.2667M2 14.2667H30M2 14.2667V8.04449C2 6.32627 3.39289 4.93338 5.11111 4.93338H8.22222M30 14.2667L30.0001 8.04449C30.0001 6.32627 28.6073 4.93338 26.889 4.93338H26.1112M8.22216 1.82227V8.04449"
+								stroke="#377243" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+						</svg>
+					</div>
+				</a>
+			</li>
+			<li class="sidebar-options-link">
+				<a @click.prevent="activeTab = 'analytics'" hx-target="#main-content" hx-get="{% url 'analytics' %}"
+					hx-trigger="click">
+					<div class="icon"><svg width="29" height="32" viewBox="0 0 29 32" fill="none"
+							xmlns="http://www.w3.org/2000/svg">
+							<path :class="{ 'active': activeTab === 'analytics' }"
+								d="M2 29.8889H27M5.61108 10.9721H3.38889C2.625 10.9721 2 11.5971 2 12.3609V24.3332C2 25.0971 2.625 25.7221 3.38889 25.7221H5.61108C6.37497 25.7221 6.99997 25.0971 6.99997 24.3332V12.3609C6.99997 11.5971 6.37497 10.9721 5.61108 10.9721ZM15.611 6.5415H13.3889C12.625 6.5415 12 7.1665 12 7.93039V24.3331C12 25.097 12.625 25.722 13.3889 25.722H15.611C16.3749 25.722 16.9999 25.097 16.9999 24.3331V7.93039C16.9999 7.1665 16.3749 6.5415 15.611 6.5415ZM25.611 2.11108H23.3888C22.6249 2.11108 21.9999 2.73608 21.9999 3.49997V24.3333C21.9999 25.0972 22.6249 25.7222 23.3888 25.7222H25.611C26.3749 25.7222 26.9999 25.0972 26.9999 24.3333V3.49997C26.9999 2.73608 26.3749 2.11108 25.611 2.11108Z"
+								stroke="#377243" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+						</svg>
+					</div>
+				</a>
+			</li>
+			<li class="sidebar-options-link">
+				<a @click.prevent="activeTab = 'sensors'" hx-target="#main-content" hx-get="{% url 'sensors' %}"
+					hx-trigger="click">
+					<div class="icon"><svg width="29" height="31" viewBox="0 0 29 31" fill="none"
+							xmlns="http://www.w3.org/2000/svg">
+							<path :class="{ 'active': activeTab === 'sensors' }"
+								d="M4.42073 28.9C4.42073 28.9 5.30572 21.877 11.5007 15.6344M25.8903 2.74674L26.9427 12.383C27.6049 18.4476 22.448 23.8475 15.5698 24.4314C8.82095 25.0044 2.70722 20.6547 2.05738 14.704C1.40755 8.75336 6.35177 3.46485 13.1006 2.89187L24.7315 1.9044C25.3152 1.85482 25.8342 2.23196 25.8903 2.74674Z"
+								stroke="#377243" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+						</svg>
+					</div>
+				</a>
+			</li>
+			<li class="sidebar-options-link">
+				<a @click.prevent="activeTab = 'info'" hx-target="#main-content" hx-get="{% url 'info' %}"
+					hx-trigger="click">
+					<div class="icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+							xmlns="http://www.w3.org/2000/svg">
+							<path :class="{ 'active': activeTab === 'info' }"
+								d="M16 15.1V22.1M16 9.51399L16.014 9.49844M16 29.8C23.7319 29.8 30 23.5319 30 15.8C30 8.068 23.7319 1.79999 16 1.79999C8.26801 1.79999 2 8.068 2 15.8C2 23.5319 8.26801 29.8 16 29.8Z"
+								stroke="#377243" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+						</svg>
+					</div>
+				</a>
+			</li>
+
+		</ul>
+
+
+	</div>
+	<div class="main" id="main-content"></div>
+
+</body>
+
+<script>
+
+	window.addEventListener('DOMContentLoaded', () => {
+		// Set the default tab as 'dashboard' when the page loads
+		document.querySelector('.sidebar-options-link:nth-child(1) a').click();
+	});
+</script>
+
+
+
+</html>

@@ -1,5 +1,4 @@
 <?php
-// Filename: controller.php
 
 $filename = 'interval_setting.txt';
 
@@ -14,24 +13,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['adjustableTime'])) {
     // Ensure the adjustable time is within the allowed range (1ms to 8 hours)
     $adjustableTime = max(1, min($adjustableTime, 28800000));
     file_put_contents($filename, $adjustableTime);
-    // For example, save it to a file or database
+
     header('Location: deploy.php');
     exit();
 }
 
-// If it's a POST request, update the interval setting
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['interval'])) {
     $interval = intval($_POST['interval']);
-    // Ensure the interval is within the allowed range (1 min to 8 hours)
     $interval = max(60000, min($interval, 28800000));
     file_put_contents($filename, $interval);
 
-    // Redirect back to the slider interface after setting the interval
     header('Location: deploy.php');
     exit();
 }
 
-// For a GET request, return the current interval
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (file_exists($filename)) {
         $currentInterval = intval(file_get_contents($filename));
@@ -41,7 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     echo $currentInterval;
 
-    // Setting default interval based on the GET parameter 'default'
     if (isset($_GET['default'])) {
         $defaultInterval = intval($_GET['default']);
         if ($defaultInterval >= 1 && $defaultInterval <= 8) {

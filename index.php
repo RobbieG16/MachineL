@@ -92,8 +92,41 @@ $link->close();
             
         </div>
                 
-            
+        <!-- <div class="row">
+            <div class="col">
+                <div class="row heatmap-header">
+                    <div class="col-auto me-auto heatmap-title">Heatmap Calendar</div>
+                    <div class="col-auto pick-crop">
+                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                            <input type="radio" class="btn-check" name="btnradio" id="heatrice" autocomplete="off" checked>
+                            <label class="btn btn-outline-primary" for="btnradio1">Rice</label>
+
+                            <input type="radio" class="btn-check" name="btnradio" id="heatcorn" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="btnradio2">Corn</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row heatmap-body">
+                    
+                </div>
+            </div>
+        </div> -->
+        
+        <div class="row recommendations">
+                <div class="row rec-header">
+                    <span>Recommendations</span>
+                </div>
+                <div class="row">
+                    <div class="recommendation-box" style="background-color: #598A6F;"></div>
+                </div>
+                <div class="row">
+                    <div class="recommendation-box" style="background-color: #93F38B;"></div>
+                </div>
+                <div class="row">
+                    <div class="recommendation-box" style="background-color: #F9EF97;"></div>
+                </div>
         </div>
+    </div>
 </div>
 
 
@@ -123,28 +156,47 @@ $link->close();
             // Add active class to clicked label
             label.classList.add('active');
 
-            // Fetch data for the selected sensor
             fetchSensorData();
+
         }
 
-        function fetchSensorData() {
+function fetchSensorData() {
     var selectedSensor = document.querySelector('input[name="sensor"]:checked').value;
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             document.getElementById("sensorDataTable").innerHTML = this.responseText;
+            
         }
     };
     xhttp.open("GET", "fetch_sensor_data.php?sensor=" + selectedSensor, true);
     xhttp.send();
-    // Update the table immediately after fetching the sensor data
     updateSensorDataTable(selectedSensor);
+
 }
+
+// Function to update the sensor data table
+function updateSensorDataTable(selectedSensor) {
+    const sensorData = <?php echo json_encode($sensorsData);?>[selectedSensor];
+    const sensorDataTable = document.getElementById("sensorDataTable");
+    sensorDataTable.innerHTML = "";
+    sensorData.forEach(data => {
+        const row = document.createElement("tr");
+        const timestampCell = document.createElement("td");
+        timestampCell.textContent = data.Timestamp;
+        const valueCell = document.createElement("td");
+        valueCell.textContent = data.Value;
+        row.appendChild(timestampCell);
+        row.appendChild(valueCell);
+        sensorDataTable.appendChild(row);
+    });
+}
+
 window.onload = function() {
     fetchSensorData();
 };
-// Function to update the sensor data table
-function updateSensorDataTable(selectedSensor) {
+
+    function updateSensorDataTable(selectedSensor) {
     const sensorData = <?php echo json_encode($sensorsData);?>[selectedSensor];
     const sensorDataTable = document.getElementById("sensorDataTable");
     sensorDataTable.innerHTML = "";

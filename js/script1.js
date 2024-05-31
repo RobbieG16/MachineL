@@ -1,69 +1,24 @@
+// Constants
+const RICE_CROP_MONTHS = [4, 5, 6, 7, 8, 9, 10];
+const CORN_CROP_MONTHS = [11, 0, 1, 2];
+const months = ["January", "February",  "March", "April", "May", "June", "July",  "August", "September", "October", "November", "December"];
+const date = new Date();
+  // Variables
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
+let statusData = {};
+
+// DOM Elements
 const daysContainer = document.querySelector(".days"),
   nextBtn = document.querySelector(".next-btn"),
   prevBtn = document.querySelector(".prev-btn"),
   month = document.querySelector(".month"),
   todayBtn = document.querySelector(".today-btn");
-
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
-let statusData = {};
-
-const date = new Date();
+  recommendedCropIcon = document.getElementById("recommended-crop-icon1"); // Get the recommended crop icon element
 
 const days = document.querySelectorAll(".days .day");
 
-daysContainer.addEventListener("click", (event) => {
-  const target = event.target;
-
-  if (target.classList.contains("day") && target.classList.contains("clickable")) {
-    const dayNumber = target.getAttribute("data-day");
-
-    const clickedDate = calculateClickedDate(dayNumber, target);
-
-    console.log(`Clicked date: ${months[clickedDate.getMonth()]} ${clickedDate.getDate()}, ${clickedDate.getFullYear()}`);
-
-    const harvestDate = new Date(clickedDate);
-    harvestDate.setDate(clickedDate.getDate() + 105);
-
-    const modalBody = `Predicted date of harvest: ${formatDateDisplay(harvestDate)}.`;
-
-    $("#exampleModal").modal("show");
-    $("#exampleModalLabel").text(`${months[clickedDate.getMonth()]} ${clickedDate.getDate()}, ${clickedDate.getFullYear()}`);
-    $("#modalBody").text(modalBody);
-
-    console.log(`Predicted date of harvest: ${formatDateDisplay(harvestDate)}`);
-  }
-});
-
-function calculateClickedDate(dayNumber, target) {
-  const clickedDate = new Date(currentYear, target.getAttribute("data-month"), dayNumber);
-  clickedDate.setDate(dayNumber);
-
-  return clickedDate;
-}
-
-function formatDateDisplay(date) {
-  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
-}
-
-let currentMonth = date.getMonth();
-
-let currentYear = date.getFullYear();
-
+// Functions
 function renderCalendar() {
   fetch(`fetch_status.php?month=${currentMonth + 1}&year=${currentYear}`)
     .then(response => response.json())
@@ -71,6 +26,9 @@ function renderCalendar() {
       console.log('Received status ', data);
       statusData = data;
 
+      updateRecommendedCropIcon();
+      updateIconInput();
+      
       date.setDate(1);
       const firstDay = new Date(currentYear, currentMonth, 1);
       const lastDay = new Date(currentYear, currentMonth + 1, 0);
@@ -94,13 +52,13 @@ function renderCalendar() {
         let bgColor = '';
         switch (dayStatusData.status) {
           case 'Green':
-            bgColor = '#65C56D';
+            bgColor = '#228B22';//#F9EF97 old color
             break;
           case 'Red':
-            bgColor = '#cc5858';
+            bgColor = '#F9EF97'; //#cc5858 old color
             break;
           case 'Yellow':
-            bgColor = '#F9EF97';
+            bgColor = '#39e664';//#65C56D old color
             break;
           default:
             bgColor = 'white'; // Default color if status is not recognized
@@ -137,6 +95,13 @@ function renderCalendar() {
     });
 }
 
+function calculateClickedDate(dayNumber, target) {
+  const clickedDate = new Date(currentYear, target.getAttribute("data-month"), dayNumber);
+  clickedDate.setDate(dayNumber);
+
+  return clickedDate;
+}
+
 function handleDayClick(event) {
   const target = event.target;
   const dayNumber = target.getAttribute("data-day");
@@ -151,10 +116,81 @@ function handleDayClick(event) {
   $("#exampleModal").modal("show");
   $("#exampleModalLabel").text(`${months[clickedDate.getMonth()]} ${clickedDate.getDate()}, ${clickedDate.getFullYear()}`);
   $("#modalBody").text(modalBody);
-
+  
 }
+
+function updateRecommendedCropIcon() {
+  const currentMonthName = months[currentMonth];
+  
+  console.log(`Current Month: ${currentMonthName}`);
+
+  if (RICE_CROP_MONTHS.includes(currentMonth)) {
+    recommendedCropIcon.src = "./img/rice.png";
+    console.log(`Recommended Crop Icon: rice.png`);
+  } else if (CORN_CROP_MONTHS.includes(currentMonth)) {
+    recommendedCropIcon.src = "./img/corn.png"; 
+    console.log(`Recommended Crop Icon1: corn.png`);
+  } else if (currentMonth === 3) {
+    recommendedCropIcon.src = "";
+    recommendedCropIcon.alt = "No crop during offseason.";
+     console.log("No recommended crop icon1 for April.");
+  }
+}
+
+function updateIconInput(month) {
+  // var currentMonth = month;
+  var foundCrop = false;
+
+  fetch('get_thresholds.php')
+      .then(response => response.json())
+      .then(data => {
+        console.log('Received data:', data); // Debugging statement
+        if (data && data.length > 0) {
+          data.forEach(function(threshold) {
+              var cropName = threshold.crop_name;
+              var months = threshold.months;
+
+              if (months.includes(String(currentMonth))) {
+                  var imageSrc = "./img/" + cropName.toLowerCase() + ".png";
+                  $('#icon-input img').attr('src', imageSrc);
+                  foundCrop = true;
+                  console.log(" " + cropName + " is the crop for month " + currentMonth + ".");
+                  return;
+              }
+          });
+          if (!foundCrop) {
+              $('#icon-input img').attr('src', ''); // Reset icon if no crop found
+              console.log("No crop found for the current month (" + currentMonth + ").");
+          }
+
+        } else {
+          console.log('No data received from server.'); // Debugging statement
+      }
+    })
+    .catch(error => console.error('Error fetching thresholds: ', error));
+}
+
+
+function formatDateDisplay(date) {
+  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+}
+
+function hideTodayBtn() {
+  if (
+    currentMonth === new Date().getMonth() &&
+    currentYear === new Date().getFullYear()
+  ) {
+    todayBtn.style.display = "none";
+  } else {
+    todayBtn.style.display = "flex";
+  }
+}
+
 renderCalendar();
 
+
+// Event Listeners
 nextBtn.addEventListener("click", () => {
   currentMonth++;
   if (currentMonth > 11) {
@@ -179,15 +215,3 @@ todayBtn.addEventListener("click", () => {
   renderCalendar();
 });
 
-// renderCalendar();
-
-function hideTodayBtn() {
-  if (
-    currentMonth === new Date().getMonth() &&
-    currentYear === new Date().getFullYear()
-  ) {
-    todayBtn.style.display = "none";
-  } else {
-    todayBtn.style.display = "flex";
-  }
-}

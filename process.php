@@ -17,7 +17,7 @@
     <?php include 'sidebar.php'; ?>
 
     <div class="main-content">
-        <h2 class="mb-4">Process</h2>
+        <h2 class="mb-4">Processes</h2>
         <div class="DIGONG" style="margin: auto;">
             <div class="row d-flex justify-content-center">
                 <div class="col">
@@ -25,13 +25,16 @@
                     <div class="ML">
                         
 
+                        <div class="row mb-4">
+                            <img src="./img/process/ML1.png" alt="machine Learning Process2">
+                        </div>
                         <div class="row">
-                            <img src="./img/ML4.gif" alt="machine Learning Process2">
+                            <img src="./img/process/ML2.png" alt="machine Learning Process2">
                         </div>
                     </div>
                 </div>
                 
-                <div class="col">
+                <!-- <div class="col">
                     <h2>HYBRID ALGORITHM</h2>
                     <div class="HA">
                         <div class="row">
@@ -41,8 +44,22 @@
                             <img src="./img/HA1.gif" alt="machine Learning Process">
                         </div>
                     </div>
+                </div> -->
+            </div>
+            <div class="row">
+                <div class="col">
+                    <h2>HYBRID ALGORITHM</h2>
+                    <div class="HA">
+                        <div class="row mb-4">
+                            <img src="./img/process/HYBRID1.png" alt="machine Learning Process">
+                        </div>
+                        <div class="row">
+                            <img src="./img/process/HYBRID2.png" alt="machine Learning Process">
+                        </div>
+                    </div>
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -50,7 +67,7 @@
     </html>
     <style>
         .main-content {
-        margin-left: 250px; /* Same as the width of your sidebar */
+        margin-left: 250px;
         padding: 1em;
     }
     body {
@@ -60,7 +77,7 @@
             min-height: 100vh;
         }  
         .ML, .HA{
-            width: 100%;
+            /* width: 100%; */
                 max-width: auto;
                 padding: 20px;
                 border-radius: 10px;
